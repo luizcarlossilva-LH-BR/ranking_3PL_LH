@@ -41,7 +41,7 @@ export default function HomePage() {
       <section className="login-card">
         <div className="brand brand-logos">
           <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
-          <img className="bsc-mark" src="/bsc-linehaul.svg" alt="BSC Line Haul" />
+          <img className="bsc-mark" src="/bsc-linehaul.png" alt="BSC Line Haul" />
         </div>
 
         <h1>Acesse seu relatório de performance</h1>
