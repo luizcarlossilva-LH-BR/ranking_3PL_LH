@@ -6,7 +6,9 @@ import PrintButton from "./print-button";
 import LogoutButton from "./logout-button";
 
 const TARGET_ETA_DESTINO = 95;
-const TARGET_NO_SHOW = 98.5;
+const WARN_ETA_DESTINO = 93;
+const TARGET_NO_SHOW = 98;
+const WARN_NO_SHOW = 96;
 const MONTH_LABELS = ["Jan", "Fev.", "Mar", "Abr.", "Mai", "Jun.", "Jul", "Ago.", "Set", "Out", "Nov.", "Dez"];
 
 type MonthlyPoint = MonthlyRecord & {
@@ -347,7 +349,7 @@ function buildVolumeText(transportador: string, rank: number, rankPond: number, 
 function buildIndicatorText(transportador: string, etaDestino: number, noShow: number) {
   const etaNivel = describeEta(etaDestino);
   const noShowNivel = describeNoShow(noShow);
-  const etaComplemento = etaDestino >= 85
+  const etaComplemento = etaDestino >= TARGET_ETA_DESTINO
     ? `Pontualidade nas entregas é um diferencial competitivo da ${transportador}.`
     : "Pontualidade nas entregas deve ser tratada como prioridade operacional.";
   const noShowComplemento = noShow >= TARGET_NO_SHOW
@@ -462,25 +464,25 @@ function formatMonthLabel(value: string, index: number) {
 }
 
 function getEtaStatus(value: number) {
-  if (value >= 85) return "good" as const;
-  if (value >= 75) return "warn" as const;
+  if (value >= TARGET_ETA_DESTINO) return "good" as const;
+  if (value >= WARN_ETA_DESTINO) return "warn" as const;
   return "bad" as const;
 }
 
 function getNoShowStatus(value: number) {
   if (value >= TARGET_NO_SHOW) return "good" as const;
-  if (value >= 95) return "warn" as const;
+  if (value >= WARN_NO_SHOW) return "warn" as const;
   return "bad" as const;
 }
 
 function describeEta(value: number) {
-  if (value >= 85) return "nível excelente (acima de 85%)";
-  if (value >= 75) return "nível de atenção";
+  if (value >= TARGET_ETA_DESTINO) return "nível excelente (acima ou igual a 95%)";
+  if (value >= WARN_ETA_DESTINO) return "nível de atenção";
   return "nível crítico";
 }
 
 function describeNoShow(value: number) {
   if (value >= TARGET_NO_SHOW) return "excelente disponibilidade operacional";
-  if (value >= 95) return "nível de atenção";
+  if (value >= WARN_NO_SHOW) return "nível de atenção";
   return "nível crítico";
 }
