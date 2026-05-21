@@ -31,7 +31,7 @@ export default async function RelatorioPage(
       <main className="login-shell">
         <section className="login-card">
           <div className="brand brand-logos">
-            <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+            <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
             <img className="bsc-mark compact" src="/bsc-linehaul.png" alt="BSC Line Haul" />
           </div>
           <h1>Acesso bloqueado</h1>
@@ -58,7 +58,7 @@ export default async function RelatorioPage(
       <main className="login-shell">
         <section className="login-card">
           <div className="brand brand-logos">
-            <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+            <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
             <img className="bsc-mark compact" src="/bsc-linehaul.png" alt="BSC Line Haul" />
           </div>
           <h1>Relatório não encontrado</h1>
@@ -89,7 +89,7 @@ export default async function RelatorioPage(
       <header className="topbar">
         <div className="container topbar-inner">
           <div className="brand brand-logos">
-            <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+            <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
             <img className="bsc-mark compact" src="/bsc-linehaul.png" alt="BSC Line Haul" />
           </div>
 

@@ -40,7 +40,7 @@ export default function HomePage() {
       <div className="tech-corner tech-corner-right" />
       <section className="login-card">
         <div className="brand brand-logos">
-          <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+          <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
           <img className="bsc-mark" src="/bsc-linehaul.png" alt="BSC Line Haul" />
         </div>
 

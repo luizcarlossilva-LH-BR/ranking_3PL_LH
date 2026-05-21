@@ -73,23 +73,27 @@ a {
 
 .brand-logos {
   gap: 18px;
+  align-items: center;
 }
 
 .shopee-mark {
-  width: 56px;
-  height: auto;
+  width: auto;
+  height: 56px;
+  object-fit: contain;
   display: block;
 }
 
 .bsc-mark {
-  width: 190px;
-  height: auto;
+  width: auto;
+  height: 88px;
+  object-fit: contain;
   display: block;
   mix-blend-mode: multiply;
 }
 
 .bsc-mark.compact {
-  width: 118px;
+  width: auto;
+  height: 56px;
 }
 
 h1 {
@@ -434,11 +438,16 @@ th {
   }
 
   .brand-logos {
-    align-items: flex-start;
+    align-items: center;
   }
 
   .bsc-mark {
-    width: 168px;
+    height: 70px;
+  }
+
+  .bsc-mark.compact,
+  .shopee-mark {
+    height: 50px;
   }
 }
 

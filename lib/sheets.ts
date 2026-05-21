@@ -34,6 +34,40 @@ export type MonthlyRecord = {
 };
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
+const MONTH_ORDER: Record<string, number> = {
+  jan: 1,
+  janeiro: 1,
+  feb: 2,
+  fev: 2,
+  fevereiro: 2,
+  mar: 3,
+  marco: 3,
+  março: 3,
+  apr: 4,
+  abr: 4,
+  abril: 4,
+  may: 5,
+  mai: 5,
+  maio: 5,
+  jun: 6,
+  junho: 6,
+  jul: 7,
+  julho: 7,
+  aug: 8,
+  ago: 8,
+  agosto: 8,
+  sep: 9,
+  set: 9,
+  setembro: 9,
+  oct: 10,
+  out: 10,
+  outubro: 10,
+  nov: 11,
+  novembro: 11,
+  dec: 12,
+  dez: 12,
+  dezembro: 12
+};
 
 function assertEnv() {
   if (!SHEET_ID) throw new Error("GOOGLE_SHEET_ID não configurado.");
@@ -113,6 +147,34 @@ function isActive(value: string) {
   return ["ativo", "sim", "yes", "y", "true", "1", "liberado"].includes(normalized);
 }
 
+function getMonthSortValue(value: string) {
+  const raw = String(value || "").trim();
+  const normalized = normalizeKey(raw);
+  const yearMonth = raw.match(/(\d{4})\D+(\d{1,2})/);
+
+  if (yearMonth) {
+    return Number(yearMonth[1]) * 100 + Number(yearMonth[2]);
+  }
+
+  const monthYear = raw.match(/(\d{1,2})\D+(\d{4})/);
+
+  if (monthYear) {
+    return Number(monthYear[2]) * 100 + Number(monthYear[1]);
+  }
+
+  const numericMonth = Number(raw.match(/\d{1,2}/)?.[0]);
+
+  if (numericMonth >= 1 && numericMonth <= 12) {
+    return numericMonth;
+  }
+
+  const monthName = normalized
+    .split("_")
+    .find((part) => MONTH_ORDER[part] !== undefined);
+
+  return monthName ? MONTH_ORDER[monthName] : Number.MAX_SAFE_INTEGER;
+}
+
 export async function findAccessByEmail(email: string): Promise<AccessRecord | null> {
   const values = await getSheetValues("acessos");
   const rows = rowsToObjects(values);
@@ -185,7 +247,10 @@ export async function getMonthlyBySlug(slug: string): Promise<MonthlyRecord[]> {
       };
     })
     .filter((row) => row.slug === slug)
-    .sort((a, b) => String(a.mes).localeCompare(String(b.mes)));
+    .sort((a, b) => {
+      const diff = getMonthSortValue(a.mes) - getMonthSortValue(b.mes);
+      return diff || String(a.mes).localeCompare(String(b.mes));
+    });
 }
 
 export async function getNetworkAverage() {
