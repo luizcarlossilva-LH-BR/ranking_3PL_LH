@@ -1,0 +1,87 @@
+# Ranking 3PL Shopee
+
+Portal com QR Code único para representantes de transportadoras acessarem o relatório individual por e-mail.
+
+## Fluxo
+
+1. O QR Code aponta para a home do projeto.
+2. O representante digita o e-mail.
+3. O sistema consulta a aba `acessos` do Google Sheets.
+4. Se o e-mail estiver ativo, cria uma sessão segura.
+5. O usuário acessa apenas a página da própria transportadora.
+
+## Abas esperadas no Google Sheets
+
+### Aba `acessos`
+
+| email | nome_representante | transportador | slug | status |
+|---|---|---|---|---|
+| representante@empresa.com | João | CORDENONSI | cordenonsi | ATIVO |
+
+### Aba `ranking`
+
+| transportador | slug | rank | rank_pond | pontuacao | eta_destino | no_show | trips | meses_ativos | peso_trips |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+
+Também são aceitos nomes próximos, como `pontuação`, `Rank Pond`, `Pontuação Ponderada`, `n_viagens`, `Meses Ativos`.
+
+### Aba `mensal`
+
+| transportador | slug | mes | pontos | eta_destino | no_show | trips |
+|---|---|---|---:|---:|---:|---:|
+
+## Variáveis de ambiente
+
+Copie `.env.example` para `.env.local` no desenvolvimento local.
+
+No Vercel, configure em:
+
+Settings > Environment Variables
+
+```env
+GOOGLE_SHEET_ID=1KsDWF-AvlswlvidWQnA_e21GP_j8sKaeK3orT4_KL08
+GOOGLE_CLIENT_EMAIL=...
+GOOGLE_PRIVATE_KEY=...
+APP_SECRET=...
+```
+
+## Permissão do Google Sheets
+
+Compartilhe a planilha com o e-mail da Service Account como leitor.
+
+Exemplo:
+
+```text
+seu-service-account@seu-projeto.iam.gserviceaccount.com
+```
+
+## Rodar local
+
+```bash
+npm install
+npm run dev
+```
+
+Abra:
+
+```text
+http://localhost:3000
+```
+
+## Deploy
+
+### Vercel
+
+1. Suba este projeto no GitHub.
+2. Importe o repositório na Vercel.
+3. Configure as variáveis de ambiente.
+4. Faça o deploy.
+
+### Netlify
+
+Também funciona, mas para Next.js a Vercel tende a ser mais simples.
+
+## Segurança
+
+A URL `/relatorio/[slug]` só abre se o e-mail logado estiver vinculado ao mesmo `slug`.
+Se o usuário tentar alterar a URL manualmente, o sistema bloqueia o acesso.
