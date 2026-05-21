@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getMonthlyBySlug, getNetworkAverage, getRankingBySlug } from "@/lib/sheets";
+import { getMonthlyBySlug, getNetworkAverage, getRankingBySlug, MonthlyRecord } from "@/lib/sheets";
 import { getSessionFromCookies } from "@/lib/session";
 import { formatNumber, formatPct, getStatusClass, parseNumber } from "@/lib/format";
 import PrintButton from "./print-button";
@@ -7,6 +7,14 @@ import LogoutButton from "./logout-button";
 
 const TARGET_ETA_DESTINO = 95;
 const TARGET_NO_SHOW = 98.5;
+const MONTH_LABELS = ["Jan", "Fev.", "Mar", "Abr.", "Mai", "Jun.", "Jul", "Ago.", "Set", "Out", "Nov.", "Dez"];
+
+type MonthlyPoint = MonthlyRecord & {
+  pontosNum: number;
+  etaDestinoNum: number;
+  noShowNum: number;
+  tripsNum: number;
+};
 
 export default async function RelatorioPage(
   props: { params: Promise<{ slug: string }> }
@@ -65,10 +73,11 @@ export default async function RelatorioPage(
   const mesesAtivos = parseNumber(ranking.mesesAtivos);
   const pesoTrips = parseNumber(ranking.pesoTrips);
   const diferencaRank = rank - rankPond;
-
-  const diagnosticoVolume = buildVolumeText(rank, rankPond, pesoTrips);
-  const diagnosticoIndicadores = buildIndicatorText(etaDestino, noShow);
-  const recomendacoes = buildRecommendations(etaDestino, noShow, pontuacao, mensal);
+  const mensalTratado = mensal.map(toMonthlyPoint);
+  const analiseMensal = buildMonthlyAnalysis(mensalTratado);
+  const diagnosticoVolume = buildVolumeText(ranking.transportador, rank, rankPond, trips, pesoTrips);
+  const diagnosticoIndicadores = buildIndicatorText(ranking.transportador, etaDestino, noShow);
+  const recomendacoes = buildRecommendations(etaDestino, noShow, pontuacao, mensalTratado);
 
   return (
     <>
@@ -93,8 +102,8 @@ export default async function RelatorioPage(
               <p style={{ margin: "0 0 8px", opacity: .88 }}>Relatório individual da transportadora</p>
               <h1>{ranking.transportador}</h1>
               <p style={{ maxWidth: 780, opacity: .92 }}>
-                Este relatório apresenta a composição da posição no ranking, considerando performance geral,
-                ETA Destino, No Show e o impacto do volume de trips no Rank Ponderado.
+                Leitura executiva do ranking, conectando posição, volume de viagens, indicadores de qualidade
+                e evolução mensal para orientar o próximo ciclo operacional.
               </p>
             </div>
 
@@ -108,40 +117,39 @@ export default async function RelatorioPage(
 
         <section className="section">
           <div className="container kpi-grid">
-            <Kpi label="Pontuação" value={formatNumber(pontuacao, 2)} />
-            <Kpi label="Média da Rede" value={formatNumber(mediaRede, 2)} />
-            <Kpi label="ETA Destino" value={formatPct(etaDestino)} status={etaDestino >= TARGET_ETA_DESTINO ? "good" : "bad"} />
-            <Kpi label="No Show" value={formatPct(noShow)} status={noShow >= TARGET_NO_SHOW ? "good" : "bad"} />
-            <Kpi label="Trips" value={formatNumber(trips, 0)} />
-            <Kpi label="Meses ativos" value={formatNumber(mesesAtivos, 0)} />
-            <Kpi label="Peso Trips" value={formatNumber(pesoTrips, 2)} />
-            <Kpi label="Diferença Rank" value={diferencaRank === 0 ? "0" : `${diferencaRank > 0 ? "+" : ""}${formatNumber(diferencaRank, 0)}`} />
+            <Kpi label="Rank Simples" value={`#${formatNumber(rank, 0)}`} />
+            <Kpi label="Rank Ponderado" value={`#${formatNumber(rankPond, 0)}`} />
+            <Kpi label="Peso Trips" value={`${formatNumber(pesoTrips, 2)}x`} />
+            <Kpi label="Pontuação Ponderada" value={formatNumber(pontuacao, 2)} />
+            <Kpi label="ETA Destino" value={formatPct(etaDestino)} status={getEtaStatus(etaDestino)} />
+            <Kpi label="No Show" value={formatPct(noShow)} status={getNoShowStatus(noShow)} />
+            <Kpi label="Viagens" value={formatNumber(trips, 0)} />
+            <Kpi label="Meses Ativos" value={`${formatNumber(mesesAtivos, 0)}/12`} />
           </div>
         </section>
 
         <section className="section">
           <div className="container grid-2">
             <div className="card">
-              <h2>Composição da pontuação</h2>
+              <h2>Visão geral do desempenho</h2>
               <p>
-                A pontuação final considera três componentes: <strong>Pontos / Performance Geral</strong>,
-                com peso de <strong>60%</strong>; <strong>ETA Destino</strong>, com peso de <strong>20%</strong>
-                e target de <strong>95%</strong>; e <strong>No Show</strong>, com peso de <strong>20%</strong>
-                e target de <strong>98,5%</strong>.
+                A <strong>{ranking.transportador}</strong> fechou a performance 2025 na posição{" "}
+                <strong>#{formatNumber(rankPond, 0)}</strong> do Ranking Ponderado, com Pontuação Ponderada de{" "}
+                <strong>{formatNumber(pontuacao, 2)} pts.</strong> {buildAverageComparison(pontuacao, mediaRede)}
+                Foram <strong>{formatNumber(trips, 0)}</strong> viagens em{" "}
+                <strong>{formatNumber(mesesAtivos, 0)}</strong> meses ativos.
+                {analiseMensal.mediaMensal > 0 && (
+                  <> Média mensal: <strong>{formatNumber(analiseMensal.mediaMensal, 1)} pts.</strong></>
+                )}
               </p>
-
-              <div className="callout">
-                Mesmo com boa pontuação geral, a transportadora pode perder posição se ETA Destino ou No Show
-                ficarem abaixo dos targets definidos.
-              </div>
             </div>
 
             <div className="card">
-              <h2>Impacto do volume de trips</h2>
+              <h2>Impacto do volume de viagens no ranking</h2>
               <p>{diagnosticoVolume}</p>
               <div className="callout">
-                O Rank simples observa a qualidade média. O Rank Ponderado considera também a representatividade
-                operacional pelo volume de trips.
+                O Rank simples mede qualidade média. O Rank Ponderado adiciona representatividade operacional pelo
+                volume de viagens, destacando transportadoras que combinam escala e consistência.
               </div>
             </div>
           </div>
@@ -150,12 +158,12 @@ export default async function RelatorioPage(
         <section className="section">
           <div className="container grid-2">
             <div className="card">
-              <h2>Diagnóstico executivo</h2>
+              <h2>Indicadores de qualidade</h2>
               <p>{diagnosticoIndicadores}</p>
             </div>
 
             <div className="card">
-              <h2>Recomendações consultivas</h2>
+              <h2>Recomendações para o próximo ciclo</h2>
               <ul>
                 {recomendacoes.map((item) => <li key={item}>{item}</li>)}
               </ul>
@@ -165,9 +173,30 @@ export default async function RelatorioPage(
 
         <section className="section">
           <div className="container card">
-            <h2>Evolução mensal</h2>
+            <h2>Evolução mensal — Pontuação / ETA / No Show</h2>
+            <MonthlyMatrix mensal={mensalTratado} />
+
+            {mensalTratado.length > 0 && (
+              <div className="monthly-summary">
+                <p className={analiseMensal.tendenciaStatus}>
+                  {analiseMensal.tendenciaTexto}
+                </p>
+                <p>
+                  Melhor mês: <strong>{analiseMensal.melhorMes?.mes}</strong>{" "}
+                  ({formatNumber(analiseMensal.melhorMes?.pontosNum || 0, 1)} pts.) | Pior mês:{" "}
+                  <strong>{analiseMensal.piorMes?.mes}</strong> ({formatNumber(analiseMensal.piorMes?.pontosNum || 0, 1)} pts.) |
+                  Desempenho recente: <strong>{formatNumber(analiseMensal.desempenhoRecente, 1)} pts.</strong>
+                </p>
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="section">
+          <div className="container card">
+            <h2>Base mensal detalhada</h2>
             <p className="muted">
-              A tabela abaixo mostra a evolução dos principais indicadores usados para explicar a posição da transportadora.
+              Tabela de apoio para auditoria dos principais indicadores usados na análise executiva.
             </p>
 
             <div className="table-wrap">
@@ -182,17 +211,17 @@ export default async function RelatorioPage(
                   </tr>
                 </thead>
                 <tbody>
-                  {mensal.map((item) => (
+                  {mensalTratado.map((item) => (
                     <tr key={`${item.mes}-${item.transportador}`}>
                       <td>{item.mes}</td>
-                      <td className={getStatusClass(parseNumber(item.pontos), 70, 85)}>{formatNumber(parseNumber(item.pontos), 2)}</td>
-                      <td className={parseNumber(item.etaDestino) >= TARGET_ETA_DESTINO ? "good" : "bad"}>{formatPct(parseNumber(item.etaDestino))}</td>
-                      <td className={parseNumber(item.noShow) >= TARGET_NO_SHOW ? "good" : "bad"}>{formatPct(parseNumber(item.noShow))}</td>
-                      <td>{formatNumber(parseNumber(item.trips), 0)}</td>
+                      <td className={getStatusClass(item.pontosNum, 70, 85)}>{formatNumber(item.pontosNum, 2)}</td>
+                      <td className={getEtaStatus(item.etaDestinoNum)}>{formatPct(item.etaDestinoNum)}</td>
+                      <td className={getNoShowStatus(item.noShowNum)}>{formatPct(item.noShowNum)}</td>
+                      <td>{formatNumber(item.tripsNum, 0)}</td>
                     </tr>
                   ))}
 
-                  {mensal.length === 0 && (
+                  {mensalTratado.length === 0 && (
                     <tr>
                       <td colSpan={5}>Não há dados mensais cadastrados para esta transportadora.</td>
                     </tr>
@@ -222,48 +251,183 @@ function Kpi({ label, value, status }: { label: string; value: string; status?: 
   );
 }
 
-function buildVolumeText(rank: number, rankPond: number, pesoTrips: number) {
+function MonthlyMatrix({ mensal }: { mensal: MonthlyPoint[] }) {
+  if (!mensal.length) {
+    return <p className="muted">Não há dados mensais cadastrados para esta transportadora.</p>;
+  }
+
+  return (
+    <div className="monthly-matrix-wrap">
+      <table className="monthly-matrix">
+        <thead>
+          <tr>
+            <th>Indicador</th>
+            {mensal.map((item, index) => (
+              <th key={`${item.mes}-${index}`}>{formatMonthLabel(item.mes, index)}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Pontuação</th>
+            {mensal.map((item, index) => (
+              <td key={`pontos-${item.mes}-${index}`} className={getStatusClass(item.pontosNum, 70, 85)}>
+                {formatNumber(item.pontosNum, 1)}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th>ETA Destino %</th>
+            {mensal.map((item, index) => (
+              <td key={`eta-${item.mes}-${index}`} className={getEtaStatus(item.etaDestinoNum)}>
+                {formatNumber(item.etaDestinoNum, 1)}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            <th>No Show %</th>
+            {mensal.map((item, index) => (
+              <td key={`noshow-${item.mes}-${index}`} className={getNoShowStatus(item.noShowNum)}>
+                {formatNumber(item.noShowNum, 1)}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+      <p className="matrix-legend">
+        Linha 1: Pontuação | Linha 2: ETA Destino % | Linha 3: No Show % &nbsp; Verde: excelente |
+        Amarelo: atenção | Vermelho: crítico
+      </p>
+    </div>
+  );
+}
+
+function toMonthlyPoint(item: MonthlyRecord): MonthlyPoint {
+  return {
+    ...item,
+    pontosNum: parseNumber(item.pontos),
+    etaDestinoNum: parseNumber(item.etaDestino),
+    noShowNum: parseNumber(item.noShow),
+    tripsNum: parseNumber(item.trips)
+  };
+}
+
+function buildAverageComparison(pontuacao: number, mediaRede: number) {
+  if (!mediaRede) return "";
+
+  const diff = pontuacao - mediaRede;
+  const direction = diff >= 0 ? "acima" : "abaixo";
+
+  return `${direction} ${formatNumber(Math.abs(diff), 2)} pts. da média geral de ${formatNumber(mediaRede, 2)} pts. `;
+}
+
+function buildVolumeText(transportador: string, rank: number, rankPond: number, trips: number, pesoTrips: number) {
+  const volume = `${formatNumber(trips, 0)} viagens, fator ${formatNumber(pesoTrips, 2)}x`;
+
   if (!rank || !rankPond) {
-    return "Não foi possível calcular a diferença entre Rank simples e Rank Ponderado, pois um dos campos está sem informação.";
+    return `Não foi possível calcular a diferença entre Rank simples e Rank Ponderado para a ${transportador}, pois um dos campos está sem informação.`;
   }
 
   if (rankPond < rank) {
-    return `A transportadora ganhou relevância no Rank Ponderado: saiu da posição #${rank} no Rank simples para #${rankPond} no Rank Ponderado. Isso indica que o volume de trips contribuiu positivamente para a posição final. Peso Trips considerado: ${formatNumber(pesoTrips, 2)}.`;
+    return `O volume de viagens da ${transportador} (${volume}) melhorou sua posição: saiu de #${formatNumber(rank, 0)} no Rank Simples para #${formatNumber(rankPond, 0)} no Rank Ponderado. A escala operacional fortaleceu a leitura final do ranking.`;
   }
 
   if (rankPond > rank) {
-    return `A transportadora perdeu posições no Rank Ponderado: saiu da posição #${rank} no Rank simples para #${rankPond} no Rank Ponderado. Isso indica que, apesar da qualidade média, o volume de trips reduziu a representatividade na composição final. Peso Trips considerado: ${formatNumber(pesoTrips, 2)}.`;
+    return `O volume de viagens da ${transportador} (${volume}) reduziu sua posição: saiu de #${formatNumber(rank, 0)} no Rank Simples para #${formatNumber(rankPond, 0)} no Rank Ponderado. Há oportunidade de equilibrar representatividade e qualidade operacional.`;
   }
 
-  return `A transportadora manteve a mesma posição no Rank simples e no Rank Ponderado. Isso indica equilíbrio entre performance média e representatividade operacional pelo volume de trips. Peso Trips considerado: ${formatNumber(pesoTrips, 2)}.`;
+  return `O volume de viagens da ${transportador} (${volume}) não alterou sua posição: Rank Simples e Rank Ponderado coincidem na posição #${formatNumber(rank, 0)}. Volume e qualidade estão alinhados.`;
 }
 
-function buildIndicatorText(etaDestino: number, noShow: number) {
-  const etaOk = etaDestino >= TARGET_ETA_DESTINO;
-  const noShowOk = noShow >= TARGET_NO_SHOW;
+function buildIndicatorText(transportador: string, etaDestino: number, noShow: number) {
+  const etaNivel = describeEta(etaDestino);
+  const noShowNivel = describeNoShow(noShow);
+  const etaComplemento = etaDestino >= 85
+    ? `Pontualidade nas entregas é um diferencial competitivo da ${transportador}.`
+    : "Pontualidade nas entregas deve ser tratada como prioridade operacional.";
+  const noShowComplemento = noShow >= TARGET_NO_SHOW
+    ? "Excelente disponibilidade operacional."
+    : "Disponibilidade operacional abaixo do target exige confirmação antecipada de frota e motorista.";
 
-  if (etaOk && noShowOk) {
-    return "A transportadora apresentou aderência positiva frente aos targets de ETA Destino e No Show, contribuindo para sustentação da pontuação final e da posição no ranking.";
+  return `ETA Destino: ${formatPct(etaDestino)} — ${etaNivel}. ${etaComplemento} No Show: ${formatPct(noShow)} — ${noShowNivel}. ${noShowComplemento}`;
+}
+
+function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
+  const valid = mensal.filter((item) => item.pontosNum > 0);
+  const mediaMensal = valid.length
+    ? valid.reduce((sum, item) => sum + item.pontosNum, 0) / valid.length
+    : 0;
+  const melhorMes = valid.reduce<MonthlyPoint | null>((best, item) => (
+    !best || item.pontosNum > best.pontosNum ? item : best
+  ), null);
+  const piorMes = valid.reduce<MonthlyPoint | null>((worst, item) => (
+    !worst || item.pontosNum < worst.pontosNum ? item : worst
+  ), null);
+  const first = valid[0]?.pontosNum || 0;
+  const last = valid[valid.length - 1]?.pontosNum || 0;
+  const recent = valid.slice(-3);
+  const desempenhoRecente = recent.length
+    ? recent.reduce((sum, item) => sum + item.pontosNum, 0) / recent.length
+    : last;
+  const diff = last - first;
+
+  if (valid.length < 2) {
+    return {
+      mediaMensal,
+      melhorMes,
+      piorMes,
+      desempenhoRecente,
+      tendenciaStatus: "warn" as const,
+      tendenciaTexto: "Histórico mensal insuficiente para leitura de tendência. Acompanhar novos meses para confirmar estabilidade."
+    };
   }
 
-  if (!etaOk && !noShowOk) {
-    return "A transportadora ficou abaixo dos targets de ETA Destino e No Show. Como cada indicador possui peso de 20%, a recuperação desses dois componentes pode gerar ganho direto na pontuação final.";
+  if (diff <= -10) {
+    return {
+      mediaMensal,
+      melhorMes,
+      piorMes,
+      desempenhoRecente,
+      tendenciaStatus: "bad" as const,
+      tendenciaTexto: "Tendência de queda progressiva — pontuações recentes inferiores ao início. Requer atenção imediata."
+    };
   }
 
-  if (!etaOk) {
-    return "O principal ponto de atenção está no ETA Destino, que ficou abaixo do target de 95%. Como esse indicador representa 20% da pontuação final, sua recuperação tende a melhorar a posição no ranking.";
+  if (diff < 0) {
+    return {
+      mediaMensal,
+      melhorMes,
+      piorMes,
+      desempenhoRecente,
+      tendenciaStatus: "warn" as const,
+      tendenciaTexto: "Tendência de queda moderada — desempenho recente abaixo do início do período. Requer plano de estabilização."
+    };
   }
 
-  return "O principal ponto de atenção está no No Show, que ficou abaixo do target de 98,5%. Como esse indicador representa 20% da pontuação final, sua recuperação tende a melhorar a posição no ranking.";
+  return {
+    mediaMensal,
+    melhorMes,
+    piorMes,
+    desempenhoRecente,
+    tendenciaStatus: "good" as const,
+    tendenciaTexto: "Tendência estável ou positiva — desempenho recente sustenta a posição atual no ranking."
+  };
 }
 
 function buildRecommendations(
   etaDestino: number,
   noShow: number,
   pontuacao: number,
-  mensal: Array<{ pontos: string }>
+  mensal: MonthlyPoint[]
 ) {
   const items: string[] = [];
+  const analysis = buildMonthlyAnalysis(mensal);
+
+  if (analysis.tendenciaStatus === "bad") {
+    items.push("Estabilizar a operação — tendência de queda é o maior risco para o próximo ciclo.");
+  } else if (analysis.tendenciaStatus === "warn") {
+    items.push("Criar rotina semanal de acompanhamento para impedir deterioração gradual da pontuação.");
+  }
 
   if (etaDestino < TARGET_ETA_DESTINO) {
     items.push("Reforçar plano de ação para ETA Destino, com foco em rotas recorrentes de atraso, disciplina de parada e aderência ao horário previsto de chegada.");
@@ -274,21 +438,44 @@ function buildRecommendations(
   }
 
   if (pontuacao < 70) {
-    items.push("Priorizar recuperação da performance geral, pois esse componente tem o maior peso no cálculo da pontuação final: 60%.");
-  } else {
-    items.push("Manter estabilidade da performance geral, pois esse componente representa 60% da pontuação final.");
+    items.push("Priorizar recuperação da performance geral, pois esse componente concentra o maior impacto na leitura final do ranking.");
   }
 
-  if (mensal.length >= 2) {
-    const first = parseNumber(mensal[0].pontos);
-    const last = parseNumber(mensal[mensal.length - 1].pontos);
-
-    if (last < first) {
-      items.push("Acompanhar a tendência mensal, pois há sinal de queda entre o início e o fim do período analisado.");
-    } else {
-      items.push("Preservar a evolução mensal e transformar boas práticas em rotina operacional.");
-    }
+  if (!items.length) {
+    items.push("Preservar a estabilidade operacional e transformar os meses de melhor desempenho em padrão de execução.");
   }
 
   return items;
+}
+
+function formatMonthLabel(value: string, index: number) {
+  const numeric = Number(String(value).match(/\d{1,2}/)?.[0]);
+
+  if (numeric >= 1 && numeric <= 12) return MONTH_LABELS[numeric - 1];
+
+  return MONTH_LABELS[index] || value;
+}
+
+function getEtaStatus(value: number) {
+  if (value >= 85) return "good" as const;
+  if (value >= 75) return "warn" as const;
+  return "bad" as const;
+}
+
+function getNoShowStatus(value: number) {
+  if (value >= TARGET_NO_SHOW) return "good" as const;
+  if (value >= 95) return "warn" as const;
+  return "bad" as const;
+}
+
+function describeEta(value: number) {
+  if (value >= 85) return "nível excelente (acima de 85%)";
+  if (value >= 75) return "nível de atenção";
+  return "nível crítico";
+}
+
+function describeNoShow(value: number) {
+  if (value >= TARGET_NO_SHOW) return "excelente disponibilidade operacional";
+  if (value >= 95) return "nível de atenção";
+  return "nível crítico";
 }

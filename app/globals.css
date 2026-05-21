@@ -235,6 +235,45 @@ p {
   background: white;
 }
 
+.monthly-matrix-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: white;
+}
+
+.monthly-matrix {
+  min-width: 920px;
+}
+
+.monthly-matrix th,
+.monthly-matrix td {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.monthly-matrix th:first-child,
+.monthly-matrix td:first-child {
+  text-align: left;
+  width: 140px;
+}
+
+.matrix-legend {
+  margin: 12px 14px 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.monthly-summary {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.monthly-summary p {
+  margin: 0;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
