@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 118" role="img" aria-labelledby="title desc">
+  <title id="title">Shopee</title>
+  <desc id="desc">Ícone Shopee em vermelho</desc>
+  <path fill="#ee4d2d" d="M12 33h72l-5 61c-1 11-9 18-20 18H37c-11 0-19-7-20-18L12 33Z"/>
+  <path fill="none" stroke="#ee4d2d" stroke-width="7" stroke-linecap="round" d="M31 33v-8C31 13 38 6 48 6s17 7 17 19v8"/>
+  <path fill="#fff" d="M49 89c-12 0-22-6-25-15l8-4c3 7 9 11 18 11 8 0 13-3 13-8 0-6-7-8-15-10-11-3-22-7-22-20 0-12 9-20 23-20 11 0 20 5 24 14l-8 5c-3-6-8-10-16-10-7 0-12 4-12 9 0 6 6 8 15 11 11 3 23 7 23 20 0 11-10 17-26 17Z"/>
+  <text x="48" y="116" fill="#ee4d2d" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" text-anchor="middle">Shopee</text>
+</svg>

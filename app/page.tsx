@@ -36,10 +36,12 @@ export default function HomePage() {
 
   return (
     <main className="login-shell">
+      <div className="tech-corner tech-corner-left" />
+      <div className="tech-corner tech-corner-right" />
       <section className="login-card">
-        <div className="brand">
-          <span className="logo-dot" />
-          <span>Shopee · Ranking 3PL</span>
+        <div className="brand brand-logos">
+          <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+          <img className="bsc-mark" src="/bsc-linehaul.svg" alt="BSC Line Haul" />
         </div>
 
         <h1>Acesse seu relatório de performance</h1>

@@ -30,7 +30,10 @@ export default async function RelatorioPage(
     return (
       <main className="login-shell">
         <section className="login-card">
-          <div className="brand"><span className="logo-dot" /><span>Shopee · Ranking 3PL</span></div>
+          <div className="brand brand-logos">
+            <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+            <img className="bsc-mark compact" src="/bsc-linehaul.svg" alt="BSC Line Haul" />
+          </div>
           <h1>Acesso bloqueado</h1>
           <p className="muted">
             Seu e-mail está vinculado à transportadora {session.transportador}.
@@ -54,7 +57,10 @@ export default async function RelatorioPage(
     return (
       <main className="login-shell">
         <section className="login-card">
-          <div className="brand"><span className="logo-dot" /><span>Shopee · Ranking 3PL</span></div>
+          <div className="brand brand-logos">
+            <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+            <img className="bsc-mark compact" src="/bsc-linehaul.svg" alt="BSC Line Haul" />
+          </div>
           <h1>Relatório não encontrado</h1>
           <p className="muted">
             O acesso foi validado, mas a transportadora não foi localizada na aba ranking.
@@ -72,7 +78,6 @@ export default async function RelatorioPage(
   const trips = parseNumber(ranking.trips);
   const mesesAtivos = parseNumber(ranking.mesesAtivos);
   const pesoTrips = parseNumber(ranking.pesoTrips);
-  const diferencaRank = rank - rankPond;
   const mensalTratado = mensal.map(toMonthlyPoint);
   const analiseMensal = buildMonthlyAnalysis(mensalTratado);
   const diagnosticoVolume = buildVolumeText(ranking.transportador, rank, rankPond, trips, pesoTrips);
@@ -83,9 +88,9 @@ export default async function RelatorioPage(
     <>
       <header className="topbar">
         <div className="container topbar-inner">
-          <div className="brand">
-            <span className="logo-dot" />
-            <span>Shopee · Ranking 3PL</span>
+          <div className="brand brand-logos">
+            <img className="shopee-mark" src="/shopee-icon.svg" alt="Shopee" />
+            <img className="bsc-mark compact" src="/bsc-linehaul.svg" alt="BSC Line Haul" />
           </div>
 
           <div className="actions">
@@ -97,20 +102,31 @@ export default async function RelatorioPage(
 
       <main>
         <section className="report-hero">
-          <div className="container hero-grid">
-            <div>
-              <p style={{ margin: "0 0 8px", opacity: .88 }}>Relatório individual da transportadora</p>
-              <h1>{ranking.transportador}</h1>
-              <p style={{ maxWidth: 780, opacity: .92 }}>
-                Leitura executiva do ranking, conectando posição, volume de viagens, indicadores de qualidade
-                e evolução mensal para orientar o próximo ciclo operacional.
-              </p>
+          <div className="tech-corner tech-corner-left" />
+          <div className="tech-corner tech-corner-right" />
+          <div className="container hero-panel">
+            <div className="hero-brand-row">
+              <img className="shopee-mark hero-shopee" src="/shopee-icon.svg" alt="Shopee" />
+              <div className="hero-dots" aria-hidden="true">
+                <span /><span /><span /><span /><span /><span />
+              </div>
             </div>
 
-            <div className="rank-badge">
-              <div>Rank Ponderado</div>
-              <div className="rank-number">#{formatNumber(rankPond, 0)}</div>
-              <div style={{ opacity: .88 }}>Rank simples: #{formatNumber(rank, 0)}</div>
+            <div className="hero-content">
+              <img className="hero-bsc" src="/bsc-linehaul.svg" alt="BSC Line Haul" />
+              <div className="hero-copy">
+                <p>Relatório individual da transportadora</p>
+                <h1>{ranking.transportador}</h1>
+                <span>
+                  Leitura executiva do ranking, conectando posição, volume de viagens, indicadores de qualidade
+                  e evolução mensal para orientar o próximo ciclo operacional.
+                </span>
+              </div>
+              <div className="rank-badge">
+                <div>Rank Ponderado</div>
+                <div className="rank-number">#{formatNumber(rankPond, 0)}</div>
+                <div>Rank simples: #{formatNumber(rank, 0)}</div>
+              </div>
             </div>
           </div>
         </section>
