@@ -83,7 +83,7 @@ export default async function RelatorioPage(
   const mensalTratado = mensal.map(toMonthlyPoint);
   const analiseMensal = buildMonthlyAnalysis(mensalTratado);
   const diagnosticoVolume = buildVolumeText(ranking.transportador, rank, rankPond, trips, pesoTrips);
-  const diagnosticoIndicadores = buildIndicatorText(ranking.transportador, etaDestino, noShow);
+  const diagnosticoIndicadores = buildIndicatorItems(etaDestino, noShow);
   const recomendacoes = buildRecommendations(etaDestino, noShow, pontuacao, mensalTratado);
 
   return (
@@ -124,13 +124,11 @@ export default async function RelatorioPage(
 
         <section className="section">
           <div className="container kpi-grid">
-            <Kpi label="Rank Simples" value={`#${formatNumber(rank, 0)}`} />
             <Kpi label="Rank Ponderado" value={`#${formatNumber(rankPond, 0)}`} />
             <Kpi label="Peso Trips" value={`${formatNumber(pesoTrips, 2)}x`} />
             <Kpi label="Pontuação Ponderada" value={formatNumber(pontuacao, 2)} />
             <Kpi label="ETA Destino" value={formatPct(etaDestino)} status={getEtaStatus(etaDestino)} />
             <Kpi label="No Show" value={formatPct(noShow)} status={getNoShowStatus(noShow)} />
-            <Kpi label="Viagens" value={formatNumber(trips, 0)} />
             <Kpi label="Meses Ativos" value={`${formatNumber(mesesAtivos, 0)}/12`} />
           </div>
         </section>
@@ -141,13 +139,8 @@ export default async function RelatorioPage(
               <h2>Visão geral do desempenho</h2>
               <p>
                 A <strong>{ranking.transportador}</strong> fechou a performance 2025 na posição{" "}
-                <strong>#{formatNumber(rankPond, 0)}</strong> do Ranking Ponderado, com Pontuação Ponderada de{" "}
+                <strong>#{formatNumber(rankPond, 0)}</strong> do Ranking, com Pontuação de{" "}
                 <strong>{formatNumber(pontuacao, 2)} pts.</strong> {buildAverageComparison(pontuacao, mediaRede)}
-                Foram <strong>{formatNumber(trips, 0)}</strong> viagens em{" "}
-                <strong>{formatNumber(mesesAtivos, 0)}</strong> meses ativos.
-                {analiseMensal.mediaMensal > 0 && (
-                  <> Média mensal: <strong>{formatNumber(analiseMensal.mediaMensal, 1)} pts.</strong></>
-                )}
               </p>
             </div>
 
@@ -166,7 +159,13 @@ export default async function RelatorioPage(
           <div className="container grid-2">
             <div className="card">
               <h2>Indicadores de qualidade</h2>
-              <p>{diagnosticoIndicadores}</p>
+              <ul className="quality-list">
+                {diagnosticoIndicadores.map((item) => (
+                  <li key={item.label}>
+                    <strong>{item.label}:</strong> {item.value} — {item.level}. {item.text}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="card">
@@ -200,7 +199,7 @@ export default async function RelatorioPage(
         </section>
 
         <section className="section">
-          <div className="container card">
+          <div className="container detailed-table">
             <h2>Base mensal detalhada</h2>
             <p className="muted">
               Tabela de apoio para auditoria dos principais indicadores usados na análise executiva.
@@ -325,7 +324,7 @@ function buildAverageComparison(pontuacao: number, mediaRede: number) {
   const diff = pontuacao - mediaRede;
   const direction = diff >= 0 ? "acima" : "abaixo";
 
-  return `${direction} ${formatNumber(Math.abs(diff), 2)} pts. da média geral de ${formatNumber(mediaRede, 2)} pts. `;
+  return `${formatNumber(Math.abs(diff), 2)} pts. ${direction} da média geral que foi de ${formatNumber(mediaRede, 2)} pts.`;
 }
 
 function buildVolumeText(transportador: string, rank: number, rankPond: number, trips: number, pesoTrips: number) {
@@ -346,17 +345,25 @@ function buildVolumeText(transportador: string, rank: number, rankPond: number, 
   return `O volume de viagens da ${transportador} (${volume}) não alterou sua posição: Rank Simples e Rank Ponderado coincidem na posição #${formatNumber(rank, 0)}. Volume e qualidade estão alinhados.`;
 }
 
-function buildIndicatorText(transportador: string, etaDestino: number, noShow: number) {
-  const etaNivel = describeEta(etaDestino);
-  const noShowNivel = describeNoShow(noShow);
-  const etaComplemento = etaDestino >= TARGET_ETA_DESTINO
-    ? `Pontualidade nas entregas é um diferencial competitivo da ${transportador}.`
-    : "Pontualidade nas entregas deve ser tratada como prioridade operacional.";
-  const noShowComplemento = noShow >= TARGET_NO_SHOW
-    ? "Excelente disponibilidade operacional."
-    : "Disponibilidade operacional abaixo do target exige confirmação antecipada de frota e motorista.";
-
-  return `ETA Destino: ${formatPct(etaDestino)} — ${etaNivel}. ${etaComplemento} No Show: ${formatPct(noShow)} — ${noShowNivel}. ${noShowComplemento}`;
+function buildIndicatorItems(etaDestino: number, noShow: number) {
+  return [
+    {
+      label: "ETA Destino",
+      value: formatPct(etaDestino),
+      level: describeEta(etaDestino),
+      text: etaDestino >= TARGET_ETA_DESTINO
+        ? "Pontualidade nas entregas é um diferencial competitivo."
+        : "Pontualidade nas entregas deve ser tratada como prioridade operacional."
+    },
+    {
+      label: "No Show",
+      value: formatPct(noShow),
+      level: describeNoShow(noShow),
+      text: noShow >= TARGET_NO_SHOW
+        ? "Excelente disponibilidade operacional."
+        : "Disponibilidade operacional abaixo do target exige confirmação antecipada de frota e motorista."
+    }
+  ];
 }
 
 function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
