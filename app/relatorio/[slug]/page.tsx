@@ -213,44 +213,6 @@ export default async function RelatorioPage(
         </section>
 
         <section className="manager-section manager-container">
-          <div className="manager-table-block">
-            <h2>Base mensal detalhada</h2>
-            <p>Tabela de apoio para auditoria dos principais indicadores usados na análise executiva.</p>
-
-            <div className="manager-table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Mês</th>
-                    <th>Pontos</th>
-                    <th>ETA Destino</th>
-                    <th>No Show</th>
-                    <th>Trips</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mensalTratado.map((item) => (
-                    <tr key={`${item.mes}-${item.transportador}`}>
-                      <td>{item.mes}</td>
-                      <td className={getStatusClass(item.pontosNum, 70, 85)}>{formatNumber(item.pontosNum, 2)}</td>
-                      <td className={getEtaStatus(item.etaDestinoNum)}>{formatPct(item.etaDestinoNum)}</td>
-                      <td className={getNoShowStatus(item.noShowNum)}>{formatPct(item.noShowNum)}</td>
-                      <td>{formatNumber(item.tripsNum, 0)}</td>
-                    </tr>
-                  ))}
-
-                  {mensalTratado.length === 0 && (
-                    <tr>
-                      <td colSpan={5}>Não há dados mensais cadastrados para esta transportadora.</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <section className="manager-section manager-container">
           <div className="manager-conclusion">
             <h2>Conclusão gerencial</h2>
             <p>{conclusaoGerencial}</p>
@@ -766,7 +728,6 @@ const REPORT_STYLES = `
   }
 
   .manager-card h2,
-  .manager-table-block h2,
   .manager-conclusion h2 {
     margin: 0 0 12px;
     color: #2d241f;
@@ -775,7 +736,6 @@ const REPORT_STYLES = `
   }
 
   .manager-card p,
-  .manager-table-block p,
   .manager-conclusion p {
     margin: 0;
     color: #4e3f37;
@@ -791,10 +751,6 @@ const REPORT_STYLES = `
 
   .manager-list li + li {
     margin-top: 10px;
-  }
-
-  .manager-table-block {
-    padding: 0;
   }
 
   .manager-table-wrap {
@@ -901,18 +857,171 @@ const REPORT_STYLES = `
   }
 
   @media print {
+    @page {
+      size: A4 landscape;
+      margin: 7mm;
+    }
+
     .manager-topbar,
     .actions,
     .manager-footer {
       display: none !important;
     }
 
+    html,
+    body {
+      width: 100%;
+      background: white !important;
+    }
+
     .manager-page {
-      background: white;
+      background: white !important;
+      color: #1f1f1f;
+      font-size: 11px;
+    }
+
+    .manager-container {
+      width: 100%;
+      max-width: none;
+    }
+
+    .manager-hero {
+      padding: 12px 0;
+      background: linear-gradient(135deg, #e7351d 0%, #ee4d2d 52%, #ff8a00 100%) !important;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .manager-hero-grid {
+      grid-template-columns: 1fr 150px;
+      gap: 12px;
+    }
+
+    .manager-eyebrow {
+      margin-bottom: 4px;
+      font-size: 9px;
+    }
+
+    .manager-hero h1 {
+      font-size: 24px;
+    }
+
+    .manager-hero p {
+      max-width: 680px;
+      margin-top: 6px;
+      font-size: 10px;
+      line-height: 1.35;
+    }
+
+    .manager-rank-card {
+      min-height: 82px;
+      padding: 10px;
+    }
+
+    .manager-rank-card strong {
+      font-size: 30px;
     }
 
     .manager-section {
-      padding: 12px 0;
+      padding: 6px 0;
+    }
+
+    .manager-criteria {
+      grid-template-columns: 86px 1fr;
+      gap: 10px;
+      padding: 10px;
+      box-shadow: none;
+      page-break-inside: avoid;
+    }
+
+    .manager-criteria-logo {
+      min-height: 68px;
+    }
+
+    .manager-criteria-logo img {
+      width: 70px;
+    }
+
+    .manager-criteria h2,
+    .manager-card h2,
+    .manager-conclusion h2 {
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .manager-criteria p,
+    .manager-card p,
+    .manager-conclusion p,
+    .manager-list {
+      font-size: 10px;
+      line-height: 1.32;
+    }
+
+    .manager-criteria p + p {
+      margin-top: 4px;
+    }
+
+    .manager-kpis {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+    }
+
+    .manager-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .manager-kpi {
+      padding: 8px;
+    }
+
+    .manager-kpi-label {
+      margin-bottom: 4px;
+      font-size: 9px;
+    }
+
+    .manager-kpi-value {
+      font-size: 15px;
+    }
+
+    .manager-card {
+      padding: 10px;
+      page-break-inside: avoid;
+    }
+
+    .manager-list li + li {
+      margin-top: 3px;
+    }
+
+    .manager-table-wrap table {
+      min-width: 0;
+    }
+
+    .manager-table-wrap th,
+    .manager-table-wrap td {
+      padding: 5px 6px;
+      font-size: 9px;
+    }
+
+    .manager-monthly-matrix th:first-child {
+      width: 88px;
+    }
+
+    .manager-legend {
+      margin: 5px 6px 6px;
+      font-size: 9px;
+    }
+
+    .manager-monthly-note {
+      gap: 2px;
+      margin-top: 6px;
+      font-size: 10px;
+    }
+
+    .manager-conclusion {
+      padding: 10px;
+      box-shadow: none;
+      page-break-inside: avoid;
     }
 
     .manager-card,
