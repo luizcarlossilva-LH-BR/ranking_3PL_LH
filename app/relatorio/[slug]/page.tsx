@@ -121,7 +121,6 @@ export default async function RelatorioPage(
             <div className="manager-rank-card">
               <span>Ranking</span>
               <strong>#{formatNumber(rankPond, 0)}</strong>
-              <small>Rank simples: #{formatNumber(rank, 0)}</small>
             </div>
           </div>
         </section>
@@ -319,18 +318,18 @@ function buildVolumeText(transportador: string, rank: number, rankPond: number, 
   const volume = `${formatNumber(trips, 0)} viagens, fator ${formatNumber(pesoTrips, 2)}x`;
 
   if (!rank || !rankPond) {
-    return `Não foi possível calcular a diferença entre Rank simples e Rank Ponderado para a ${transportador}, pois um dos campos está sem informação.`;
+    return `Não foi possível calcular o impacto do volume para a ${transportador}, pois um dos campos necessários está sem informação.`;
   }
 
   if (rankPond < rank) {
-    return `O volume de viagens da ${transportador} (${volume}) melhorou sua posição: saiu de #${formatNumber(rank, 0)} no Rank Simples para #${formatNumber(rankPond, 0)} no Rank Ponderado. A escala operacional fortaleceu a leitura final do ranking.`;
+    return `O volume de viagens da ${transportador} (${volume}) fortaleceu a posição final no Ranking, encerrando o período em #${formatNumber(rankPond, 0)}. A escala operacional contribuiu positivamente para a leitura final.`;
   }
 
   if (rankPond > rank) {
-    return `O volume de viagens da ${transportador} (${volume}) reduziu sua posição: saiu de #${formatNumber(rank, 0)} no Rank Simples para #${formatNumber(rankPond, 0)} no Rank Ponderado. Há oportunidade de equilibrar representatividade e qualidade operacional.`;
+    return `O volume de viagens da ${transportador} (${volume}) pressionou a posição final no Ranking, encerrando o período em #${formatNumber(rankPond, 0)}. Há oportunidade de equilibrar representatividade e qualidade operacional.`;
   }
 
-  return `O volume de viagens da ${transportador} (${volume}) não alterou sua posição: Rank Simples e Rank Ponderado coincidem na posição #${formatNumber(rank, 0)}. Volume e qualidade estão alinhados.`;
+  return `O volume de viagens da ${transportador} (${volume}) manteve a posição final em #${formatNumber(rankPond, 0)}. Volume e qualidade estão alinhados.`;
 }
 
 function buildIndicatorItems(etaDestino: number, noShow: number) {
@@ -348,7 +347,7 @@ function buildIndicatorItems(etaDestino: number, noShow: number) {
       value: formatPct(noShow),
       level: describeNoShow(noShow),
       text: noShow >= TARGET_NO_SHOW
-        ? "Excelente disponibilidade operacional."
+        ? "Indicador dentro da faixa esperada."
         : "Disponibilidade operacional abaixo do target exige confirmação antecipada de frota e motorista."
     }
   ];
