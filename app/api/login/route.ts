@@ -1,30 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
-import { findAccessByEmail } from "@/lib/sheets";
+import { findAccessByCpf } from "@/lib/sheets";
 import { createSessionToken } from "@/lib/session";
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const email = String(body?.email || "").trim().toLowerCase();
+    const cpf = String(body?.cpf || "").replace(/\D/g, "");
 
-    if (!email || !email.includes("@")) {
+    if (!cpf) {
       return NextResponse.json(
-        { message: "Informe um e-mail válido." },
+        { message: "Informe o CPF cadastrado." },
         { status: 400 }
       );
     }
 
-    const access = await findAccessByEmail(email);
+    const access = await findAccessByCpf(cpf);
 
     if (!access) {
       return NextResponse.json(
-        { message: "E-mail não encontrado ou sem acesso ativo." },
+        { message: "CPF não encontrado ou sem acesso ativo." },
         { status: 403 }
       );
     }
 
     const token = await createSessionToken({
-      email,
+      cpf,
       slug: access.slug,
       transportador: access.transportador
     });

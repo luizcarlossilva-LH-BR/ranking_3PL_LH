@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { jwtVerify, SignJWT } from "jose";
 
 type SessionPayload = {
-  email: string;
+  cpf: string;
   slug: string;
   transportador: string;
 };
@@ -30,7 +30,7 @@ export async function verifySessionToken(token: string): Promise<SessionPayload 
     const { payload } = await jwtVerify(token, getSecret());
 
     return {
-      email: String(payload.email),
+      cpf: String(payload.cpf),
       slug: String(payload.slug),
       transportador: String(payload.transportador)
     };

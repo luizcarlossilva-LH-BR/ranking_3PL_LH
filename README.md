@@ -1,22 +1,22 @@
 # Ranking 3PL Shopee
 
-Portal com QR Code único para representantes de transportadoras acessarem o relatório individual por e-mail.
+Portal com QR Code único para representantes de transportadoras acessarem o relatório individual por CPF.
 
 ## Fluxo
 
 1. O QR Code aponta para a home do projeto.
-2. O representante digita o e-mail.
+2. O representante digita o CPF.
 3. O sistema consulta a aba `acessos` do Google Sheets.
-4. Se o e-mail estiver ativo, cria uma sessão segura.
+4. Se o CPF estiver ativo, cria uma sessão segura.
 5. O usuário acessa apenas a página da própria transportadora.
 
 ## Abas esperadas no Google Sheets
 
 ### Aba `acessos`
 
-| email | nome_representante | transportador | slug | status |
+| cpf | nome_representante | transportador | slug | status |
 |---|---|---|---|---|
-| representante@empresa.com | João | CORDENONSI | cordenonsi | ATIVO |
+| 12345678900 | João | CORDENONSI | cordenonsi | ATIVO |
 
 ### Aba `ranking`
 
@@ -83,5 +83,5 @@ Também funciona, mas para Next.js a Vercel tende a ser mais simples.
 
 ## Segurança
 
-A URL `/relatorio/[slug]` só abre se o e-mail logado estiver vinculado ao mesmo `slug`.
+A URL `/relatorio/[slug]` só abre se o CPF logado estiver vinculado ao mesmo `slug`.
 Se o usuário tentar alterar a URL manualmente, o sistema bloqueia o acesso.

@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 
 export default function HomePage() {
-  const [email, setEmail] = useState("");
+  const [cpf, setCpf] = useState("");
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
 
@@ -16,7 +16,7 @@ export default function HomePage() {
       const response = await fetch("/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ cpf })
       });
 
       const data = await response.json();
@@ -47,17 +47,19 @@ export default function HomePage() {
         <h1>Acesse seu relatório de performance</h1>
 
         <p className="muted">
-          Digite o e-mail cadastrado para visualizar a página individual da sua transportadora.
+          Digite o CPF cadastrado para visualizar a página individual da sua transportadora.
         </p>
 
         <form className="form" onSubmit={handleSubmit}>
           <input
             className="input"
-            type="email"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             required
-            placeholder="email@transportadora.com.br"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Digite somente números"
+            value={cpf}
+            onChange={(e) => setCpf(e.target.value.replace(/\D/g, ""))}
           />
 
           <button className="button" disabled={loading}>

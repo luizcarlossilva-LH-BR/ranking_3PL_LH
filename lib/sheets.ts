@@ -4,7 +4,7 @@ import { parseNumber } from "./format";
 type RawRow = Record<string, string>;
 
 export type AccessRecord = {
-  email: string;
+  cpf: string;
   transportador: string;
   slug: string;
   status: string;
@@ -136,6 +136,10 @@ function pick(row: RawRow, keys: string[], fallback = "") {
   return fallback;
 }
 
+function onlyDigits(value: string) {
+  return String(value || "").replace(/\D/g, "");
+}
+
 export function makeSlug(value: string) {
   return normalizeKey(value)
     .replace(/_/g, "-")
@@ -179,14 +183,15 @@ function getMonthSortValue(value: string) {
   return monthName ? MONTH_ORDER[monthName] : Number.MAX_SAFE_INTEGER;
 }
 
-export async function findAccessByEmail(email: string): Promise<AccessRecord | null> {
+export async function findAccessByCpf(cpf: string): Promise<AccessRecord | null> {
   const values = await getSheetValues("acessos");
   const rows = rowsToObjects(values);
+  const normalizedCpf = onlyDigits(cpf);
 
   const found = rows.find((row) => {
-    const rowEmail = pick(row, ["email", "e_mail"]).toLowerCase();
+    const rowCpf = onlyDigits(pick(row, ["cpf", "documento", "doc"]));
     const status = pick(row, ["status", "liberado", "ativo"], "ATIVO");
-    return rowEmail === email.toLowerCase() && isActive(status);
+    return rowCpf === normalizedCpf && isActive(status);
   });
 
   if (!found) return null;
@@ -195,7 +200,7 @@ export async function findAccessByEmail(email: string): Promise<AccessRecord | n
   const slug = pickSlug(found, transportador);
 
   return {
-    email,
+    cpf: normalizedCpf,
     transportador,
     slug,
     status: pick(found, ["status"], "ATIVO")

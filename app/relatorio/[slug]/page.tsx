@@ -38,7 +38,7 @@ export default async function RelatorioPage(
           </div>
           <h1>Acesso bloqueado</h1>
           <p className="muted">
-            Seu e-mail está vinculado à transportadora {session.transportador}.
+            Seu CPF está vinculado à transportadora {session.transportador}.
             Por segurança, você não pode acessar o relatório de outra transportadora.
           </p>
           <form action="/">
