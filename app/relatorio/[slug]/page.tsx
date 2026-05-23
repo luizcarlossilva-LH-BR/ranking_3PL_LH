@@ -84,15 +84,19 @@ export default async function RelatorioPage(
   const analiseMensal = buildMonthlyAnalysis(mensalTratado);
   const diagnosticoVolume = buildVolumeText(ranking.transportador, rank, rankPond, trips, pesoTrips);
   const diagnosticoIndicadores = buildIndicatorItems(etaDestino, noShow);
+  const diagnosticoOperacional = buildOperationalDiagnosis(pontuacao, etaDestino, noShow, analiseMensal.tendenciaStatus);
   const recomendacoes = buildRecommendations(etaDestino, noShow, pontuacao, mensalTratado);
+  const conclusaoGerencial = buildManagementConclusion(ranking.transportador, pontuacao, mediaRede, analiseMensal.tendenciaStatus);
 
   return (
     <>
-      <header className="topbar">
-        <div className="container topbar-inner">
-          <div className="brand brand-logos">
-            <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
-            <img className="bsc-mark compact" src="/bsc-linehaul.png" alt="BSC Line Haul" />
+      <style>{REPORT_STYLES}</style>
+
+      <header className="manager-topbar">
+        <div className="manager-container manager-topbar-inner">
+          <div className="manager-brand">
+            <img src="/shopee-icon.png" alt="Shopee" />
+            <img src="/bsc-linehaul.png" alt="BSC Line Haul" />
           </div>
 
           <div className="actions">
@@ -102,91 +106,101 @@ export default async function RelatorioPage(
         </div>
       </header>
 
-      <main>
-        <section className="report-hero">
-          <div className="container hero-panel compact-hero">
-            <img className="hero-bsc" src="/bsc-linehaul.png" alt="BSC Line Haul" />
-            <div className="hero-copy">
-              <p>Relatório individual da transportadora</p>
+      <main className="manager-page">
+        <section className="manager-hero">
+          <div className="manager-container manager-hero-grid">
+            <div>
+              <div className="manager-eyebrow">Relatório gerencial 2025</div>
               <h1>{ranking.transportador}</h1>
-              <span>
-                Leitura executiva do ranking, conectando posição, volume de viagens, indicadores de qualidade
-                e evolução mensal para orientar o próximo ciclo operacional.
-              </span>
-            </div>
-            <div className="rank-badge">
-              <div>Rank Ponderado</div>
-              <div className="rank-number">#{formatNumber(rankPond, 0)}</div>
-              <div>Rank simples: #{formatNumber(rank, 0)}</div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="container kpi-grid">
-            <Kpi label="Rank Ponderado" value={`#${formatNumber(rankPond, 0)}`} />
-            <Kpi label="Peso Trips" value={`${formatNumber(pesoTrips, 2)}x`} />
-            <Kpi label="Pontuação Ponderada" value={formatNumber(pontuacao, 2)} />
-            <Kpi label="ETA Destino" value={formatPct(etaDestino)} status={getEtaStatus(etaDestino)} />
-            <Kpi label="No Show" value={formatPct(noShow)} status={getNoShowStatus(noShow)} />
-            <Kpi label="Meses Ativos" value={`${formatNumber(mesesAtivos, 0)}/12`} />
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="container grid-2">
-            <div className="card">
-              <h2>Visão geral do desempenho</h2>
               <p>
-                A <strong>{ranking.transportador}</strong> fechou a performance 2025 na posição{" "}
-                <strong>#{formatNumber(rankPond, 0)}</strong> do Ranking, com Pontuação de{" "}
-                <strong>{formatNumber(pontuacao, 2)} pts.</strong> {buildAverageComparison(pontuacao, mediaRede)}
+                Visão executiva de performance, qualidade operacional, impacto de volume e evolução mensal para suporte
+                à tomada de decisão.
               </p>
             </div>
 
-            <div className="card">
-              <h2>Impacto do volume de viagens no ranking</h2>
-              <p>{diagnosticoVolume}</p>
-              <div className="callout">
-                O Rank simples mede qualidade média. O Rank Ponderado adiciona representatividade operacional pelo
-                volume de viagens, destacando transportadoras que combinam escala e consistência.
-              </div>
+            <div className="manager-rank-card">
+              <span>Ranking</span>
+              <strong>#{formatNumber(rankPond, 0)}</strong>
+              <small>Rank simples: #{formatNumber(rank, 0)}</small>
             </div>
           </div>
         </section>
 
-        <section className="section">
-          <div className="container grid-2">
-            <div className="card">
-              <h2>Indicadores de qualidade</h2>
-              <ul className="quality-list">
-                {diagnosticoIndicadores.map((item) => (
-                  <li key={item.label}>
-                    <strong>{item.label}:</strong> {item.value} — {item.level}. {item.text}
-                  </li>
-                ))}
-              </ul>
+        <section className="manager-section manager-container">
+          <div className="manager-criteria">
+            <div className="manager-criteria-logo">
+              <img src="/bsc-linehaul.png" alt="BSC Line Haul" />
             </div>
 
-            <div className="card">
-              <h2>Recomendações para o próximo ciclo</h2>
-              <ul>
-                {recomendacoes.map((item) => <li key={item}>{item}</li>)}
-              </ul>
+            <div>
+              <h2>Critérios e cálculo da premiação</h2>
+              <p>
+                Para participar do ranking oficial, a transportadora precisa ter mais de 3 meses ativos no período
+                analisado. Um mês é considerado ativo quando possui mais de 12 viagens realizadas.
+              </p>
+              <p>
+                A pontuação base é composta por três indicadores principais: média da pontuação BSC nos meses ativos,
+                com peso de <strong>60%</strong>; ETA Destino, com peso de <strong>20%</strong>; e No Show, também com
+                peso de <strong>20%</strong>. Após o cálculo da pontuação base, é aplicado o múltiplo de share.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className="section">
-          <div className="container card">
-            <h2>Evolução mensal — Pontuação / ETA / No Show</h2>
+        <section className="manager-section manager-kpis manager-container">
+          <Kpi label="Ranking" value={`#${formatNumber(rankPond, 0)}`} />
+          <Kpi label="Pontuação" value={formatNumber(pontuacao, 2)} />
+          <Kpi label="Peso Trips" value={`${formatNumber(pesoTrips, 2)}x`} />
+          <Kpi label="ETA Destino" value={formatPct(etaDestino)} status={getEtaStatus(etaDestino)} />
+          <Kpi label="No Show" value={formatPct(noShow)} status={getNoShowStatus(noShow)} />
+          <Kpi label="Meses Ativos" value={`${formatNumber(mesesAtivos, 0)}/12`} />
+        </section>
+
+        <section className="manager-section manager-container manager-grid">
+          <ArticleCard title="Resumo executivo">
+            <p>
+              A <strong>{ranking.transportador}</strong> fechou a performance 2025 na posição{" "}
+              <strong>#{formatNumber(rankPond, 0)}</strong> do Ranking, com Pontuação de{" "}
+              <strong>{formatNumber(pontuacao, 2)} pts.</strong> {buildAverageComparison(pontuacao, mediaRede)}
+            </p>
+          </ArticleCard>
+
+          <ArticleCard title="Diagnóstico operacional">
+            <p>{diagnosticoOperacional}</p>
+          </ArticleCard>
+        </section>
+
+        <section className="manager-section manager-container manager-grid">
+          <ArticleCard title="Impacto do volume no ranking">
+            <p>{diagnosticoVolume}</p>
+          </ArticleCard>
+
+          <ArticleCard title="Indicadores de qualidade">
+            <ul className="manager-list">
+              {diagnosticoIndicadores.map((item) => (
+                <li key={item.label}>
+                  <strong>{item.label}:</strong> {item.value} — {item.level}. {item.text}
+                </li>
+              ))}
+            </ul>
+          </ArticleCard>
+        </section>
+
+        <section className="manager-section manager-container">
+          <ArticleCard title="Recomendações">
+            <ul className="manager-list">
+              {recomendacoes.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </ArticleCard>
+        </section>
+
+        <section className="manager-section manager-container">
+          <ArticleCard title="Tabela mensal com cores por faixa de desempenho">
             <MonthlyMatrix mensal={mensalTratado} />
 
             {mensalTratado.length > 0 && (
-              <div className="monthly-summary">
-                <p className={analiseMensal.tendenciaStatus}>
-                  {analiseMensal.tendenciaTexto}
-                </p>
+              <div className="manager-monthly-note">
+                <p className={analiseMensal.tendenciaStatus}>{analiseMensal.tendenciaTexto}</p>
                 <p>
                   Melhor mês: <strong>{analiseMensal.melhorMes?.mes}</strong>{" "}
                   ({formatNumber(analiseMensal.melhorMes?.pontosNum || 0, 1)} pts.) | Pior mês:{" "}
@@ -195,17 +209,15 @@ export default async function RelatorioPage(
                 </p>
               </div>
             )}
-          </div>
+          </ArticleCard>
         </section>
 
-        <section className="section">
-          <div className="container detailed-table">
+        <section className="manager-section manager-container">
+          <div className="manager-table-block">
             <h2>Base mensal detalhada</h2>
-            <p className="muted">
-              Tabela de apoio para auditoria dos principais indicadores usados na análise executiva.
-            </p>
+            <p>Tabela de apoio para auditoria dos principais indicadores usados na análise executiva.</p>
 
-            <div className="table-wrap">
+            <div className="manager-table-wrap">
               <table>
                 <thead>
                   <tr>
@@ -238,10 +250,15 @@ export default async function RelatorioPage(
           </div>
         </section>
 
-        <footer className="footer">
-          <div className="container">
-            Shopee Brasil · Excelência Operacional · Line Haul
+        <section className="manager-section manager-container">
+          <div className="manager-conclusion">
+            <h2>Conclusão gerencial</h2>
+            <p>{conclusaoGerencial}</p>
           </div>
+        </section>
+
+        <footer className="manager-footer">
+          Shopee Brasil · Excelência Operacional · Line Haul
         </footer>
       </main>
     </>
@@ -250,21 +267,30 @@ export default async function RelatorioPage(
 
 function Kpi({ label, value, status }: { label: string; value: string; status?: "good" | "warn" | "bad" }) {
   return (
-    <div className="kpi">
-      <div className="kpi-label">{label}</div>
-      <div className={`kpi-value ${status || ""}`}>{value}</div>
+    <div className="manager-kpi">
+      <div className="manager-kpi-label">{label}</div>
+      <div className={`manager-kpi-value ${status || ""}`}>{value}</div>
     </div>
+  );
+}
+
+function ArticleCard({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <article className="manager-card">
+      <h2>{title}</h2>
+      {children}
+    </article>
   );
 }
 
 function MonthlyMatrix({ mensal }: { mensal: MonthlyPoint[] }) {
   if (!mensal.length) {
-    return <p className="muted">Não há dados mensais cadastrados para esta transportadora.</p>;
+    return <p className="manager-muted">Não há dados mensais cadastrados para esta transportadora.</p>;
   }
 
   return (
-    <div className="monthly-matrix-wrap">
-      <table className="monthly-matrix">
+    <div className="manager-table-wrap">
+      <table className="manager-monthly-matrix">
         <thead>
           <tr>
             <th>Indicador</th>
@@ -300,8 +326,8 @@ function MonthlyMatrix({ mensal }: { mensal: MonthlyPoint[] }) {
           </tr>
         </tbody>
       </table>
-      <p className="matrix-legend">
-        Linha 1: Pontuação | Linha 2: ETA Destino % | Linha 3: No Show % &nbsp; Verde: excelente |
+      <p className="manager-legend">
+        Linha 1: Pontuação | Linha 2: ETA Destino % | Linha 3: No Show % · Verde: excelente |
         Amarelo: atenção | Vermelho: crítico
       </p>
     </div>
@@ -364,6 +390,28 @@ function buildIndicatorItems(etaDestino: number, noShow: number) {
         : "Disponibilidade operacional abaixo do target exige confirmação antecipada de frota e motorista."
     }
   ];
+}
+
+function buildOperationalDiagnosis(
+  pontuacao: number,
+  etaDestino: number,
+  noShow: number,
+  tendenciaStatus: "good" | "warn" | "bad"
+) {
+  const qualityRisks = [
+    etaDestino < TARGET_ETA_DESTINO ? "ETA Destino abaixo do target" : "",
+    noShow < TARGET_NO_SHOW ? "No Show abaixo do target" : ""
+  ].filter(Boolean);
+
+  if (tendenciaStatus === "bad") {
+    return `A operação apresenta risco de deterioração recente e deve priorizar estabilização do desempenho mensal. ${qualityRisks.length ? `Pontos de atenção: ${qualityRisks.join(" e ")}.` : "Os indicadores de qualidade devem ser preservados para evitar perda de posição."}`;
+  }
+
+  if (qualityRisks.length) {
+    return `A pontuação de ${formatNumber(pontuacao, 2)} pts. é sustentada parcialmente pela base operacional, mas há oportunidade clara de ganho com a recuperação de ${qualityRisks.join(" e ")}.`;
+  }
+
+  return `A operação apresenta leitura consistente, com pontuação de ${formatNumber(pontuacao, 2)} pts. e indicadores de qualidade dentro das faixas esperadas. O foco gerencial deve ser manter estabilidade e prevenir oscilações mensais.`;
 }
 
 function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
@@ -462,6 +510,25 @@ function buildRecommendations(
   return items;
 }
 
+function buildManagementConclusion(
+  transportador: string,
+  pontuacao: number,
+  mediaRede: number,
+  tendenciaStatus: "good" | "warn" | "bad"
+) {
+  const comparison = mediaRede && pontuacao >= mediaRede ? "acima da média geral" : "abaixo da média geral";
+
+  if (tendenciaStatus === "bad") {
+    return `A ${transportador} demanda acompanhamento gerencial próximo no próximo ciclo. Apesar da posição atual no ranking, a tendência recente indica risco de perda de competitividade se a operação não for estabilizada.`;
+  }
+
+  if (tendenciaStatus === "warn") {
+    return `A ${transportador} encerra o período ${comparison}, mas precisa reduzir oscilação operacional para proteger a pontuação e sustentar a posição no ranking.`;
+  }
+
+  return `A ${transportador} encerra o período ${comparison}, com leitura operacional favorável. A prioridade gerencial deve ser preservar consistência, manter disciplina nos indicadores críticos e replicar os meses de melhor desempenho.`;
+}
+
 function formatMonthLabel(value: string, index: number) {
   const numeric = Number(String(value).match(/\d{1,2}/)?.[0]);
 
@@ -483,7 +550,7 @@ function getNoShowStatus(value: number) {
 }
 
 function describeEta(value: number) {
-  if (value >= TARGET_ETA_DESTINO) return "nível excelente (acima ou igual a 95%)";
+  if (value >= TARGET_ETA_DESTINO) return "nível excelente";
   if (value >= WARN_ETA_DESTINO) return "nível de atenção";
   return "nível crítico";
 }
@@ -493,3 +560,365 @@ function describeNoShow(value: number) {
   if (value >= WARN_NO_SHOW) return "nível de atenção";
   return "nível crítico";
 }
+
+const REPORT_STYLES = `
+  .manager-page {
+    min-height: 100vh;
+    background:
+      linear-gradient(135deg, rgba(238, 77, 45, .08), transparent 28%),
+      linear-gradient(315deg, rgba(255, 122, 0, .12), transparent 30%),
+      #fff7f0;
+    color: #2d241f;
+  }
+
+  .manager-container {
+    width: min(1120px, calc(100% - 32px));
+    margin: 0 auto;
+  }
+
+  .manager-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(255, 247, 240, .94);
+    border-bottom: 3px solid #ee4d2d;
+    backdrop-filter: blur(12px);
+  }
+
+  .manager-topbar-inner {
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .manager-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .manager-brand img:first-child {
+    width: auto;
+    height: 52px;
+    object-fit: contain;
+  }
+
+  .manager-brand img:last-child {
+    width: auto;
+    height: 52px;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+  }
+
+  .manager-hero {
+    padding: 34px 0;
+    color: white;
+    background: linear-gradient(135deg, #e7351d 0%, #ee4d2d 48%, #ff8a00 100%);
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, .22);
+  }
+
+  .manager-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 230px;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .manager-eyebrow {
+    margin-bottom: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    opacity: .86;
+  }
+
+  .manager-hero h1 {
+    margin: 0;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+
+  .manager-hero p {
+    max-width: 740px;
+    margin: 12px 0 0;
+    color: rgba(255, 255, 255, .88);
+    line-height: 1.55;
+  }
+
+  .manager-rank-card {
+    min-height: 142px;
+    display: grid;
+    align-content: center;
+    gap: 6px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, .38);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .15);
+    text-align: center;
+  }
+
+  .manager-rank-card span,
+  .manager-rank-card small {
+    color: rgba(255, 255, 255, .86);
+    font-weight: 700;
+  }
+
+  .manager-rank-card strong {
+    color: white;
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  .manager-section {
+    padding: 22px 0;
+  }
+
+  .manager-criteria {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 22px;
+    align-items: center;
+    padding: 22px;
+    border: 1px solid #f3b68e;
+    border-left: 6px solid #ee4d2d;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 12px 34px rgba(180, 61, 24, .08);
+  }
+
+  .manager-criteria-logo {
+    display: grid;
+    place-items: center;
+    min-height: 118px;
+    border-radius: 8px;
+    background: #fff0e3;
+  }
+
+  .manager-criteria-logo img {
+    width: 118px;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+  }
+
+  .manager-criteria h2 {
+    margin: 0 0 10px;
+    color: #2d241f;
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .manager-criteria p {
+    margin: 0;
+    color: #4e3f37;
+    line-height: 1.6;
+  }
+
+  .manager-criteria p + p {
+    margin-top: 10px;
+  }
+
+  .manager-kpis {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .manager-kpi,
+  .manager-card,
+  .manager-conclusion {
+    border: 1px solid #f3b68e;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .92);
+    box-shadow: 0 12px 34px rgba(180, 61, 24, .08);
+  }
+
+  .manager-kpi {
+    padding: 18px;
+  }
+
+  .manager-kpi-label {
+    margin-bottom: 8px;
+    color: #765f53;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .manager-kpi-value {
+    color: #2d241f;
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1.1;
+  }
+
+  .manager-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .manager-card {
+    padding: 22px;
+  }
+
+  .manager-card h2,
+  .manager-table-block h2,
+  .manager-conclusion h2 {
+    margin: 0 0 12px;
+    color: #2d241f;
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .manager-card p,
+  .manager-table-block p,
+  .manager-conclusion p {
+    margin: 0;
+    color: #4e3f37;
+    line-height: 1.6;
+  }
+
+  .manager-list {
+    margin: 0;
+    padding-left: 20px;
+    color: #4e3f37;
+    line-height: 1.6;
+  }
+
+  .manager-list li + li {
+    margin-top: 10px;
+  }
+
+  .manager-table-block {
+    padding: 0;
+  }
+
+  .manager-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #f3b68e;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, .94);
+  }
+
+  .manager-table-wrap table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+  }
+
+  .manager-table-wrap th,
+  .manager-table-wrap td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #f5d3bd;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .manager-table-wrap th {
+    background: #fff0e3;
+    color: #5f4538;
+    font-weight: 900;
+  }
+
+  .manager-monthly-matrix th,
+  .manager-monthly-matrix td {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .manager-monthly-matrix th:first-child {
+    text-align: left;
+    width: 150px;
+  }
+
+  .manager-legend {
+    margin: 12px 14px 14px;
+    color: #765f53;
+    font-size: 13px;
+  }
+
+  .manager-monthly-note {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .manager-monthly-note p {
+    margin: 0;
+  }
+
+  .manager-conclusion {
+    padding: 22px;
+    border-left: 6px solid #ee4d2d;
+  }
+
+  .manager-footer {
+    padding: 32px 16px;
+    text-align: center;
+    color: #765f53;
+  }
+
+  .good { color: #15803d !important; font-weight: 900; }
+  .warn { color: #a16207 !important; font-weight: 900; }
+  .bad { color: #b91c1c !important; font-weight: 900; }
+
+  @media (max-width: 820px) {
+    .manager-topbar-inner {
+      align-items: flex-start;
+      flex-direction: column;
+      padding: 14px 0;
+    }
+
+    .manager-hero-grid,
+    .manager-grid,
+    .manager-kpis,
+    .manager-criteria {
+      grid-template-columns: 1fr;
+    }
+
+    .manager-hero h1 {
+      font-size: 32px;
+    }
+
+    .manager-brand img:first-child,
+    .manager-brand img:last-child {
+      height: 46px;
+    }
+
+    .manager-criteria-logo {
+      min-height: 92px;
+      justify-items: start;
+      background: transparent;
+    }
+
+    .manager-criteria-logo img {
+      width: 96px;
+    }
+  }
+
+  @media print {
+    .manager-topbar,
+    .actions,
+    .manager-footer {
+      display: none !important;
+    }
+
+    .manager-page {
+      background: white;
+    }
+
+    .manager-section {
+      padding: 12px 0;
+    }
+
+    .manager-card,
+    .manager-kpi,
+    .manager-conclusion {
+      box-shadow: none;
+    }
+  }
+`;
