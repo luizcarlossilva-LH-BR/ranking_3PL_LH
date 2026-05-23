@@ -136,10 +136,14 @@ function pick(row: RawRow, keys: string[], fallback = "") {
   return fallback;
 }
 
-function makeSlug(value: string) {
+export function makeSlug(value: string) {
   return normalizeKey(value)
     .replace(/_/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function pickSlug(row: RawRow, transportador: string) {
+  return makeSlug(pick(row, ["slug"], transportador));
 }
 
 function isActive(value: string) {
@@ -188,7 +192,7 @@ export async function findAccessByEmail(email: string): Promise<AccessRecord | n
   if (!found) return null;
 
   const transportador = pick(found, ["transportador", "3pl", "transportadora"]);
-  const slug = pick(found, ["slug"], makeSlug(transportador));
+  const slug = pickSlug(found, transportador);
 
   return {
     email,
@@ -204,14 +208,14 @@ export async function getRankingBySlug(slug: string): Promise<RankingRecord | nu
 
   const found = rows.find((row) => {
     const transportador = pick(row, ["transportador", "3pl", "transportadora"]);
-    const rowSlug = pick(row, ["slug"], makeSlug(transportador));
-    return rowSlug === slug;
+    const rowSlug = pickSlug(row, transportador);
+    return rowSlug === makeSlug(slug);
   });
 
   if (!found) return null;
 
   const transportador = pick(found, ["transportador", "3pl", "transportadora"]);
-  const rowSlug = pick(found, ["slug"], makeSlug(transportador));
+  const rowSlug = pickSlug(found, transportador);
 
   return {
     transportador,
@@ -234,7 +238,7 @@ export async function getMonthlyBySlug(slug: string): Promise<MonthlyRecord[]> {
   return rows
     .map((row) => {
       const transportador = pick(row, ["transportador", "3pl", "transportadora"]);
-      const rowSlug = pick(row, ["slug"], makeSlug(transportador));
+      const rowSlug = pickSlug(row, transportador);
 
       return {
         transportador,
@@ -246,7 +250,7 @@ export async function getMonthlyBySlug(slug: string): Promise<MonthlyRecord[]> {
         trips: pick(row, ["trips", "n_viagens", "sum_of_n_viagens", "viagens"])
       };
     })
-    .filter((row) => row.slug === slug)
+    .filter((row) => row.slug === makeSlug(slug))
     .sort((a, b) => {
       const diff = getMonthSortValue(a.mes) - getMonthSortValue(b.mes);
       return diff || String(a.mes).localeCompare(String(b.mes));

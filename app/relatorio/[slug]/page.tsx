@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getMonthlyBySlug, getNetworkAverage, getRankingBySlug, MonthlyRecord } from "@/lib/sheets";
+import { getMonthlyBySlug, getNetworkAverage, getRankingBySlug, makeSlug, MonthlyRecord } from "@/lib/sheets";
 import { getSessionFromCookies } from "@/lib/session";
 import { formatNumber, formatPct, getStatusClass, parseNumber } from "@/lib/format";
 import PrintButton from "./print-button";
@@ -28,7 +28,7 @@ export default async function RelatorioPage(
     redirect("/");
   }
 
-  if (session.slug !== slug) {
+  if (makeSlug(session.slug) !== makeSlug(slug)) {
     return (
       <main className="login-shell">
         <section className="login-card">

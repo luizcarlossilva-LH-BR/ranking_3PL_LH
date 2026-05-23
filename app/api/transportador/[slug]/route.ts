@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getMonthlyBySlug, getRankingBySlug } from "@/lib/sheets";
+import { getMonthlyBySlug, getRankingBySlug, makeSlug } from "@/lib/sheets";
 import { getSessionFromCookies } from "@/lib/session";
 
 export async function GET(
@@ -10,7 +10,7 @@ export async function GET(
     const { slug } = await context.params;
     const session = await getSessionFromCookies();
 
-    if (!session || session.slug !== slug) {
+    if (!session || makeSlug(session.slug) !== makeSlug(slug)) {
       return NextResponse.json(
         { message: "Acesso não autorizado para esta transportadora." },
         { status: 403 }
