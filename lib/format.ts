@@ -10,9 +10,25 @@ export function parseNumber(value: unknown): number {
 
   if (!raw) return 0;
 
-  const normalized = raw.includes(",")
-    ? raw.replace(/\./g, "").replace(",", ".")
-    : raw.replace(/,/g, "");
+  const lastComma = raw.lastIndexOf(",");
+  const lastDot = raw.lastIndexOf(".");
+  let normalized = raw;
+
+  if (lastComma >= 0 && lastDot >= 0) {
+    normalized = lastComma > lastDot
+      ? raw.replace(/\./g, "").replace(",", ".")
+      : raw.replace(/,/g, "");
+  } else if (lastComma >= 0) {
+    const digitsAfterComma = raw.length - lastComma - 1;
+    normalized = digitsAfterComma === 3
+      ? raw.replace(/,/g, "")
+      : raw.replace(",", ".");
+  } else if (lastDot >= 0) {
+    const digitsAfterDot = raw.length - lastDot - 1;
+    normalized = digitsAfterDot === 3
+      ? raw.replace(/\./g, "")
+      : raw;
+  }
 
   const parsed = Number(normalized);
 
