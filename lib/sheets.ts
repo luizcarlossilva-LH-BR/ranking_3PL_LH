@@ -21,6 +21,10 @@ export type RankingRecord = {
   trips: string;
   mesesAtivos: string;
   pesoTrips: string;
+  rankSafety: string;
+  pontuacaoSafety: string;
+  rankPeakSeason: string;
+  pontuacaoPeakSeason: string;
 };
 
 export type MonthlyRecord = {
@@ -232,7 +236,11 @@ export async function getRankingBySlug(slug: string): Promise<RankingRecord | nu
     noShow: pick(found, ["no_show", "noshow", "med_pts_show", "porct_no_show"]),
     trips: pick(found, ["trips", "n_viagens", "sum_of_n_viagens", "viagens"]),
     mesesAtivos: pick(found, ["meses_ativos", "meses", "active_months"]),
-    pesoTrips: pick(found, ["peso_trips", "peso_trip", "peso_volume"])
+    pesoTrips: pick(found, ["peso_trips", "peso_trip", "peso_volume"]),
+    rankSafety: pick(found, ["rank_safety", "safety_rank", "ranking_safety", "rank_seguranca", "rank_segurança"]),
+    pontuacaoSafety: pick(found, ["pontuacao_safety", "pontuação_safety", "safety_score", "score_safety", "pontuacao_seguranca", "pontuação_segurança"]),
+    rankPeakSeason: pick(found, ["rank_peak_season", "peak_season_rank", "ranking_peak_season", "rank_peak", "rank_pico"]),
+    pontuacaoPeakSeason: pick(found, ["pontuacao_peak_season", "pontuação_peak_season", "peak_season_score", "score_peak_season", "pontuacao_peak", "pontuação_pico"])
   };
 }
 

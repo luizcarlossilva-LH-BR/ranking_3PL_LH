@@ -20,10 +20,11 @@ Portal com QR Code único para representantes de transportadoras acessarem o rel
 
 ### Aba `ranking`
 
-| transportador | slug | rank | rank_pond | pontuacao | eta_destino | no_show | trips | meses_ativos | peso_trips |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| transportador | slug | rank | rank_pond | pontuacao | eta_destino | no_show | trips | meses_ativos | peso_trips | rank_safety | pontuacao_safety | rank_peak_season | pontuacao_peak_season |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 
 Também são aceitos nomes próximos, como `pontuação`, `Rank Pond`, `Pontuação Ponderada`, `n_viagens`, `Meses Ativos`.
+Para as lâminas adicionais, também são aceitos nomes próximos como `safety_rank`, `safety_score`, `peak_season_rank` e `peak_season_score`.
 
 ### Aba `mensal`
 

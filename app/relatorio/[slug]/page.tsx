@@ -80,10 +80,16 @@ export default async function RelatorioPage(
   const trips = parseNumber(ranking.trips);
   const mesesAtivos = parseNumber(ranking.mesesAtivos);
   const pesoTrips = parseNumber(ranking.pesoTrips);
+  const rankSafety = parseNumber(ranking.rankSafety);
+  const pontuacaoSafety = parseNumber(ranking.pontuacaoSafety);
+  const rankPeakSeason = parseNumber(ranking.rankPeakSeason);
+  const pontuacaoPeakSeason = parseNumber(ranking.pontuacaoPeakSeason);
   const mensalTratado = mensal.map(toMonthlyPoint);
   const analiseMensal = buildMonthlyAnalysis(mensalTratado);
   const diagnosticoVolume = buildVolumeText(ranking.transportador, rank, rankPond, trips, pesoTrips);
   const diagnosticoIndicadores = buildIndicatorItems(etaDestino, noShow);
+  const safetyText = buildSafetyText(ranking.transportador, rankSafety, pontuacaoSafety);
+  const peakSeasonText = buildPeakSeasonText(ranking.transportador, rankPeakSeason, pontuacaoPeakSeason);
   const diagnosticoOperacional = buildOperationalDiagnosis(pontuacao, etaDestino, noShow, analiseMensal.tendenciaStatus);
   const recomendacoes = buildRecommendations(etaDestino, noShow, pontuacao, mensalTratado);
   const conclusaoGerencial = buildManagementConclusion(ranking.transportador, pontuacao, mediaRede, analiseMensal.tendenciaStatus);
@@ -185,6 +191,24 @@ export default async function RelatorioPage(
           </ArticleCard>
         </section>
 
+        <section className="manager-section manager-container manager-grid">
+          <ArticleCard title="Lâmina Safety">
+            <div className="manager-slide-metrics">
+              <MetricPill label="Rank Safety" value={formatOptionalRank(rankSafety)} />
+              <MetricPill label="Pontuação Safety" value={formatOptionalScore(pontuacaoSafety)} />
+            </div>
+            <p>{safetyText}</p>
+          </ArticleCard>
+
+          <ArticleCard title="Lâmina Peak Season">
+            <div className="manager-slide-metrics">
+              <MetricPill label="Rank Peak Season" value={formatOptionalRank(rankPeakSeason)} />
+              <MetricPill label="Pontuação Peak" value={formatOptionalScore(pontuacaoPeakSeason)} />
+            </div>
+            <p>{peakSeasonText}</p>
+          </ArticleCard>
+        </section>
+
         <section className="manager-section manager-container">
           <ArticleCard title="Recomendações">
             <ul className="manager-list">
@@ -241,6 +265,15 @@ function ArticleCard({ title, children }: { title: string; children: React.React
       <h2>{title}</h2>
       {children}
     </article>
+  );
+}
+
+function MetricPill({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="manager-metric-pill">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
   );
 }
 
@@ -351,6 +384,36 @@ function buildIndicatorItems(etaDestino: number, noShow: number) {
         : "Disponibilidade operacional abaixo do target exige confirmação antecipada de frota e motorista."
     }
   ];
+}
+
+function formatOptionalRank(value: number) {
+  return value > 0 ? `#${formatNumber(value, 0)}` : "N/I";
+}
+
+function formatOptionalScore(value: number) {
+  return value > 0 ? `${formatNumber(value, 2)} pts.` : "N/I";
+}
+
+function buildSafetyText(transportador: string, rankSafety: number, pontuacaoSafety: number) {
+  if (!rankSafety && !pontuacaoSafety) {
+    return `A lâmina Safety da ${transportador} está preparada para receber o ranking de segurança assim que os campos forem preenchidos na aba ranking. Use esta visão para conectar disciplina operacional, prevenção de incidentes e elegibilidade no ciclo de premiação.`;
+  }
+
+  const rankText = rankSafety ? `posição #${formatNumber(rankSafety, 0)}` : "posição não informada";
+  const scoreText = pontuacaoSafety ? `, com ${formatNumber(pontuacaoSafety, 2)} pts.` : ".";
+
+  return `No eixo Safety, a ${transportador} aparece na ${rankText}${scoreText} Essa leitura deve orientar ações sobre prevenção, aderência a processos críticos e redução de exposição operacional.`;
+}
+
+function buildPeakSeasonText(transportador: string, rankPeakSeason: number, pontuacaoPeakSeason: number) {
+  if (!rankPeakSeason && !pontuacaoPeakSeason) {
+    return `A lâmina Peak Season da ${transportador} está preparada para receber o ranking do período de pico assim que os campos forem preenchidos na aba ranking. Use esta visão para avaliar resiliência, capacidade de resposta e estabilidade em alta demanda.`;
+  }
+
+  const rankText = rankPeakSeason ? `posição #${formatNumber(rankPeakSeason, 0)}` : "posição não informada";
+  const scoreText = pontuacaoPeakSeason ? `, com ${formatNumber(pontuacaoPeakSeason, 2)} pts.` : ".";
+
+  return `Na visão Peak Season, a ${transportador} aparece na ${rankText}${scoreText} O resultado indica a capacidade da operação de sustentar qualidade, disponibilidade e execução durante períodos de maior volume.`;
 }
 
 function buildOperationalDiagnosis(
@@ -752,6 +815,34 @@ const REPORT_STYLES = `
     margin-top: 10px;
   }
 
+  .manager-slide-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .manager-metric-pill {
+    padding: 12px;
+    border: 1px solid #f3b68e;
+    border-radius: 8px;
+    background: #fff8f0;
+  }
+
+  .manager-metric-pill span {
+    display: block;
+    margin-bottom: 4px;
+    color: #765f53;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .manager-metric-pill strong {
+    color: #2d241f;
+    font-size: 22px;
+    line-height: 1;
+  }
+
   .manager-table-wrap {
     overflow-x: auto;
     border: 1px solid #f3b68e;
@@ -831,7 +922,8 @@ const REPORT_STYLES = `
     .manager-hero-grid,
     .manager-grid,
     .manager-kpis,
-    .manager-criteria {
+    .manager-criteria,
+    .manager-slide-metrics {
       grid-template-columns: 1fr;
     }
 
@@ -990,6 +1082,24 @@ const REPORT_STYLES = `
 
     .manager-list li + li {
       margin-top: 3px;
+    }
+
+    .manager-slide-metrics {
+      gap: 5px;
+      margin-bottom: 6px;
+    }
+
+    .manager-metric-pill {
+      padding: 6px;
+    }
+
+    .manager-metric-pill span {
+      margin-bottom: 2px;
+      font-size: 8px;
+    }
+
+    .manager-metric-pill strong {
+      font-size: 13px;
     }
 
     .manager-table-wrap table {
