@@ -195,7 +195,7 @@ export default async function RelatorioPage(
           <ArticleCard title="Lâmina Safety">
             <div className="manager-slide-metrics">
               <MetricPill label="Rank Safety" value={formatOptionalRank(rankSafety)} />
-              <MetricPill label="Pontuação Safety" value={formatOptionalScore(pontuacaoSafety)} />
+              <MetricPill label="Performance Safety" value={formatOptionalScore(pontuacaoSafety)} />
             </div>
             <p>{safetyText}</p>
           </ArticleCard>
@@ -203,7 +203,7 @@ export default async function RelatorioPage(
           <ArticleCard title="Lâmina Peak Season">
             <div className="manager-slide-metrics">
               <MetricPill label="Rank Peak Season" value={formatOptionalRank(rankPeakSeason)} />
-              <MetricPill label="Pontuação Peak" value={formatOptionalScore(pontuacaoPeakSeason)} />
+              <MetricPill label="No Show Sem. 46-51" value={formatOptionalScore(pontuacaoPeakSeason)} />
             </div>
             <p>{peakSeasonText}</p>
           </ArticleCard>
@@ -396,24 +396,24 @@ function formatOptionalScore(value: number) {
 
 function buildSafetyText(transportador: string, rankSafety: number, pontuacaoSafety: number) {
   if (!rankSafety && !pontuacaoSafety) {
-    return `A lâmina Safety da ${transportador} está preparada para receber o ranking de segurança assim que os campos forem preenchidos na aba ranking. Use esta visão para conectar disciplina operacional, prevenção de incidentes e elegibilidade no ciclo de premiação.`;
+    return `A lâmina Safety da ${transportador} está preparada para receber o ranking de segurança assim que os campos forem preenchidos na aba ranking. A métrica considera a performance 2025 no pilar Safety, apenas para transportadoras com mais de 4 meses ativos. Em caso de empate, o critério de desempate é o número de viagens.`;
   }
 
   const rankText = rankSafety ? `posição #${formatNumber(rankSafety, 0)}` : "posição não informada";
   const scoreText = pontuacaoSafety ? `, com ${formatNumber(pontuacaoSafety, 2)} pts.` : ".";
 
-  return `No eixo Safety, a ${transportador} aparece na ${rankText}${scoreText} Essa leitura deve orientar ações sobre prevenção, aderência a processos críticos e redução de exposição operacional.`;
+  return `No eixo Safety, a ${transportador} aparece na ${rankText}${scoreText} A métrica considera a performance 2025 no pilar Safety, apenas para transportadoras com mais de 4 meses ativos. Em caso de empate, o critério de desempate é o número de viagens.`;
 }
 
 function buildPeakSeasonText(transportador: string, rankPeakSeason: number, pontuacaoPeakSeason: number) {
   if (!rankPeakSeason && !pontuacaoPeakSeason) {
-    return `A lâmina Peak Season da ${transportador} está preparada para receber o ranking do período de pico assim que os campos forem preenchidos na aba ranking. Use esta visão para avaliar resiliência, capacidade de resposta e estabilidade em alta demanda.`;
+    return `A lâmina Peak Season da ${transportador} está preparada para receber o ranking do período de pico assim que os campos forem preenchidos na aba ranking. A métrica considera a performance no indicador de No Show nas semanas 46 a 51 de 2025.`;
   }
 
   const rankText = rankPeakSeason ? `posição #${formatNumber(rankPeakSeason, 0)}` : "posição não informada";
   const scoreText = pontuacaoPeakSeason ? `, com ${formatNumber(pontuacaoPeakSeason, 2)} pts.` : ".";
 
-  return `Na visão Peak Season, a ${transportador} aparece na ${rankText}${scoreText} O resultado indica a capacidade da operação de sustentar qualidade, disponibilidade e execução durante períodos de maior volume.`;
+  return `Na visão Peak Season, a ${transportador} aparece na ${rankText}${scoreText} A métrica considera a performance no indicador de No Show nas semanas 46 a 51 de 2025, refletindo a capacidade de sustentar disponibilidade operacional no período de maior demanda.`;
 }
 
 function buildOperationalDiagnosis(

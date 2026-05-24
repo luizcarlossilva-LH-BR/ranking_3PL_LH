@@ -26,6 +26,11 @@ Portal com QR Code único para representantes de transportadoras acessarem o rel
 Também são aceitos nomes próximos, como `pontuação`, `Rank Pond`, `Pontuação Ponderada`, `n_viagens`, `Meses Ativos`.
 Para as lâminas adicionais, também são aceitos nomes próximos como `safety_rank`, `safety_score`, `peak_season_rank` e `peak_season_score`.
 
+Critérios das lâminas adicionais:
+
+- `Safety`: performance 2025 no pilar Safety para transportadoras com mais de 4 meses ativos. Em caso de empate, usar o número de viagens como critério de desempate.
+- `Peak Season`: performance no indicador de No Show nas semanas 46 a 51 de 2025.
+
 ### Aba `mensal`
 
 | transportador | slug | mes | pontos | eta_destino | no_show | trips |
