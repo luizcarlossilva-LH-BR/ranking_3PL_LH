@@ -92,7 +92,7 @@ export default async function RelatorioPage(
   const peakSeasonText = buildPeakSeasonText(ranking.transportador, rankPeakSeason, pontuacaoPeakSeason);
   const diagnosticoOperacional = buildOperationalDiagnosis(pontuacao, etaDestino, noShow, analiseMensal.tendenciaStatus);
   const recomendacoes = buildRecommendations(etaDestino, noShow, pontuacao, mensalTratado);
-  const conclusaoGerencial = buildManagementConclusion(ranking.transportador, pontuacao, mediaRede, analiseMensal.tendenciaStatus);
+  const conclusao = buildConclusion(ranking.transportador, pontuacao, mediaRede, analiseMensal.tendenciaStatus);
 
   return (
     <>
@@ -116,11 +116,11 @@ export default async function RelatorioPage(
         <section className="manager-hero">
           <div className="manager-container manager-hero-grid">
             <div>
-              <div className="manager-eyebrow">Relatório gerencial 2025</div>
+              <div className="manager-eyebrow">Relatório de desempenho 2025</div>
               <h1>{ranking.transportador}</h1>
               <p>
-                Visão executiva de performance, qualidade operacional, impacto de volume e evolução mensal para suporte
-                à tomada de decisão.
+                Leitura pós-divulgação do ranking, com os principais resultados de performance, qualidade operacional,
+                impacto de volume e evolução mensal da transportadora.
               </p>
             </div>
 
@@ -140,13 +140,13 @@ export default async function RelatorioPage(
             <div>
               <h2>Critérios e cálculo da premiação</h2>
               <p>
-                Para participar do ranking oficial, a transportadora precisa ter mais de 3 meses ativos no período
-                analisado. Um mês é considerado ativo quando possui mais de 12 viagens realizadas.
+                Para participar do ranking oficial, a transportadora precisou ter mais de 3 meses ativos no período
+                analisado. Um mês foi considerado ativo quando teve mais de 12 viagens realizadas.
               </p>
               <p>
-                A pontuação base é composta por três indicadores principais: média da pontuação BSC nos meses ativos,
+                A pontuação base foi composta por três indicadores principais: média da pontuação BSC nos meses ativos,
                 com peso de <strong>60%</strong>; ETA Destino, com peso de <strong>20%</strong>; e No Show, também com
-                peso de <strong>20%</strong>. Após o cálculo da pontuação base, é aplicado o múltiplo de share.
+                peso de <strong>20%</strong>. Após o cálculo da pontuação base, foi aplicado o múltiplo de share.
               </p>
             </div>
           </div>
@@ -203,14 +203,14 @@ export default async function RelatorioPage(
           <ArticleCard title="Lâmina Peak Season">
             <div className="manager-slide-metrics">
               <MetricPill label="Rank Peak Season" value={formatOptionalRank(rankPeakSeason)} />
-              <MetricPill label="No Show Sem. 46-51" value={formatOptionalScore(pontuacaoPeakSeason)} />
+              <MetricPill label="No Show Sem. 46-51" value={formatOptionalPct(pontuacaoPeakSeason)} />
             </div>
             <p>{peakSeasonText}</p>
           </ArticleCard>
         </section>
 
         <section className="manager-section manager-container">
-          <ArticleCard title="Recomendações">
+          <ArticleCard title="Pontos de atenção">
             <ul className="manager-list">
               {recomendacoes.map((item) => <li key={item}>{item}</li>)}
             </ul>
@@ -237,8 +237,8 @@ export default async function RelatorioPage(
 
         <section className="manager-section manager-container">
           <div className="manager-conclusion">
-            <h2>Conclusão gerencial</h2>
-            <p>{conclusaoGerencial}</p>
+            <h2>Conclusão</h2>
+            <p>{conclusao}</p>
           </div>
         </section>
 
@@ -372,16 +372,16 @@ function buildIndicatorItems(etaDestino: number, noShow: number) {
       value: formatPct(etaDestino),
       level: describeEta(etaDestino),
       text: etaDestino >= TARGET_ETA_DESTINO
-        ? "Pontualidade nas entregas é um diferencial competitivo."
-        : "Pontualidade nas entregas deve ser tratada como prioridade operacional."
+        ? "A pontualidade nas entregas contribuiu positivamente para o resultado."
+        : "A pontualidade nas entregas ficou como principal oportunidade operacional."
     },
     {
       label: "No Show",
       value: formatPct(noShow),
       level: describeNoShow(noShow),
       text: noShow >= TARGET_NO_SHOW
-        ? "Indicador dentro da faixa esperada."
-        : "Disponibilidade operacional abaixo do target exige confirmação antecipada de frota e motorista."
+        ? "O indicador ficou dentro da faixa esperada."
+        : "A disponibilidade operacional ficou abaixo do target esperado."
     }
   ];
 }
@@ -394,26 +394,30 @@ function formatOptionalScore(value: number) {
   return value > 0 ? `${formatNumber(value, 2)} pts.` : "N/I";
 }
 
+function formatOptionalPct(value: number) {
+  return value > 0 ? formatPct(value) : "N/I";
+}
+
 function buildSafetyText(transportador: string, rankSafety: number, pontuacaoSafety: number) {
   if (!rankSafety && !pontuacaoSafety) {
-    return `A lâmina Safety da ${transportador} está preparada para receber o ranking de segurança assim que os campos forem preenchidos na aba ranking. A métrica considera a performance 2025 no pilar Safety, apenas para transportadoras com mais de 4 meses ativos. Em caso de empate, o critério de desempate é o número de viagens.`;
+    return `A lâmina Safety da ${transportador} não teve dados informados na aba ranking. A métrica considerou a performance 2025 no pilar Safety, apenas para transportadoras com mais de 4 meses ativos. Em caso de empate, o critério de desempate foi o número de viagens.`;
   }
 
   const rankText = rankSafety ? `posição #${formatNumber(rankSafety, 0)}` : "posição não informada";
   const scoreText = pontuacaoSafety ? `, com ${formatNumber(pontuacaoSafety, 2)} pts.` : ".";
 
-  return `No eixo Safety, a ${transportador} aparece na ${rankText}${scoreText} A métrica considera a performance 2025 no pilar Safety, apenas para transportadoras com mais de 4 meses ativos. Em caso de empate, o critério de desempate é o número de viagens.`;
+  return `No eixo Safety, a ${transportador} ficou na ${rankText}${scoreText} A métrica considerou a performance 2025 no pilar Safety, apenas para transportadoras com mais de 4 meses ativos. Em caso de empate, o critério de desempate foi o número de viagens.`;
 }
 
 function buildPeakSeasonText(transportador: string, rankPeakSeason: number, pontuacaoPeakSeason: number) {
   if (!rankPeakSeason && !pontuacaoPeakSeason) {
-    return `A lâmina Peak Season da ${transportador} está preparada para receber o ranking do período de pico assim que os campos forem preenchidos na aba ranking. A métrica considera a performance no indicador de No Show nas semanas 46 a 51 de 2025.`;
+    return `A lâmina Peak Season da ${transportador} não teve dados informados na aba ranking. A métrica considerou a performance no indicador de No Show nas semanas 46 a 51 de 2025.`;
   }
 
   const rankText = rankPeakSeason ? `posição #${formatNumber(rankPeakSeason, 0)}` : "posição não informada";
-  const scoreText = pontuacaoPeakSeason ? `, com ${formatNumber(pontuacaoPeakSeason, 2)} pts.` : ".";
+  const scoreText = pontuacaoPeakSeason ? `, com No Show de ${formatPct(pontuacaoPeakSeason)}.` : ".";
 
-  return `Na visão Peak Season, a ${transportador} aparece na ${rankText}${scoreText} A métrica considera a performance no indicador de No Show nas semanas 46 a 51 de 2025, refletindo a capacidade de sustentar disponibilidade operacional no período de maior demanda.`;
+  return `Na visão Peak Season, a ${transportador} ficou na ${rankText}${scoreText} A métrica considerou a performance no indicador de No Show nas semanas 46 a 51 de 2025, refletindo a disponibilidade operacional no período de maior demanda.`;
 }
 
 function buildOperationalDiagnosis(
@@ -428,14 +432,14 @@ function buildOperationalDiagnosis(
   ].filter(Boolean);
 
   if (tendenciaStatus === "bad") {
-    return `A operação apresenta risco de deterioração recente e deve priorizar estabilização do desempenho mensal. ${qualityRisks.length ? `Pontos de atenção: ${qualityRisks.join(" e ")}.` : "Os indicadores de qualidade devem ser preservados para evitar perda de posição."}`;
+    return `A operação apresentou deterioração no desempenho mensal ao longo do período. ${qualityRisks.length ? `Pontos de atenção identificados: ${qualityRisks.join(" e ")}.` : "Os indicadores de qualidade permaneceram como base para preservação da posição."}`;
   }
 
   if (qualityRisks.length) {
-    return `A pontuação de ${formatNumber(pontuacao, 2)} pts. é sustentada parcialmente pela base operacional, mas há oportunidade clara de ganho com a recuperação de ${qualityRisks.join(" e ")}.`;
+    return `A pontuação de ${formatNumber(pontuacao, 2)} pts. foi sustentada parcialmente pela base operacional, com oportunidade de ganho associada à recuperação de ${qualityRisks.join(" e ")}.`;
   }
 
-  return `A operação apresenta leitura consistente, com pontuação de ${formatNumber(pontuacao, 2)} pts. e indicadores de qualidade dentro das faixas esperadas. O foco gerencial deve ser manter estabilidade e prevenir oscilações mensais.`;
+  return `A operação apresentou leitura consistente, com pontuação de ${formatNumber(pontuacao, 2)} pts. e indicadores de qualidade dentro das faixas esperadas. O resultado refletiu estabilidade operacional no período analisado.`;
 }
 
 function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
@@ -464,7 +468,7 @@ function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
       piorMes,
       desempenhoRecente,
       tendenciaStatus: "warn" as const,
-      tendenciaTexto: "Histórico mensal insuficiente para leitura de tendência. Acompanhar novos meses para confirmar estabilidade."
+      tendenciaTexto: "O histórico mensal disponível foi insuficiente para uma leitura conclusiva de tendência."
     };
   }
 
@@ -475,7 +479,7 @@ function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
       piorMes,
       desempenhoRecente,
       tendenciaStatus: "bad" as const,
-      tendenciaTexto: "Tendência de queda progressiva — pontuações recentes inferiores ao início. Requer atenção imediata."
+      tendenciaTexto: "A evolução mensal indicou queda progressiva, com pontuações recentes inferiores ao início do período."
     };
   }
 
@@ -486,7 +490,7 @@ function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
       piorMes,
       desempenhoRecente,
       tendenciaStatus: "warn" as const,
-      tendenciaTexto: "Tendência de queda moderada — desempenho recente abaixo do início do período. Requer plano de estabilização."
+      tendenciaTexto: "A evolução mensal indicou queda moderada, com desempenho recente abaixo do início do período."
     };
   }
 
@@ -496,7 +500,7 @@ function buildMonthlyAnalysis(mensal: MonthlyPoint[]) {
     piorMes,
     desempenhoRecente,
     tendenciaStatus: "good" as const,
-    tendenciaTexto: "Tendência estável ou positiva — desempenho recente sustenta a posição atual no ranking."
+    tendenciaTexto: "A evolução mensal foi estável ou positiva, sustentando a posição divulgada no ranking."
   };
 }
 
@@ -510,31 +514,31 @@ function buildRecommendations(
   const analysis = buildMonthlyAnalysis(mensal);
 
   if (analysis.tendenciaStatus === "bad") {
-    items.push("Estabilizar a operação — tendência de queda é o maior risco para o próximo ciclo.");
+    items.push("A tendência de queda foi o principal ponto de atenção observado no período.");
   } else if (analysis.tendenciaStatus === "warn") {
-    items.push("Criar rotina semanal de acompanhamento para impedir deterioração gradual da pontuação.");
+    items.push("A oscilação mensal indicou oportunidade de maior estabilidade operacional.");
   }
 
   if (etaDestino < TARGET_ETA_DESTINO) {
-    items.push("Reforçar plano de ação para ETA Destino, com foco em rotas recorrentes de atraso, disciplina de parada e aderência ao horário previsto de chegada.");
+    items.push("O ETA Destino ficou abaixo do target, com impacto direto na leitura de pontualidade das entregas.");
   }
 
   if (noShow < TARGET_NO_SHOW) {
-    items.push("Atuar na prevenção de No Show, reforçando confirmação antecipada de veículo, motorista e disponibilidade operacional junto à programação.");
+    items.push("O No Show ficou abaixo do target, sinalizando oportunidade na confirmação de veículo, motorista e disponibilidade operacional.");
   }
 
   if (pontuacao < 70) {
-    items.push("Priorizar recuperação da performance geral, pois esse componente concentra o maior impacto na leitura final do ranking.");
+    items.push("A performance geral ficou em faixa crítica e teve peso relevante na composição final do ranking.");
   }
 
   if (!items.length) {
-    items.push("Preservar a estabilidade operacional e transformar os meses de melhor desempenho em padrão de execução.");
+    items.push("O resultado demonstrou estabilidade operacional e aderência aos principais indicadores avaliados.");
   }
 
   return items;
 }
 
-function buildManagementConclusion(
+function buildConclusion(
   transportador: string,
   pontuacao: number,
   mediaRede: number,
@@ -543,14 +547,14 @@ function buildManagementConclusion(
   const comparison = mediaRede && pontuacao >= mediaRede ? "acima da média geral" : "abaixo da média geral";
 
   if (tendenciaStatus === "bad") {
-    return `A ${transportador} demanda acompanhamento gerencial próximo no próximo ciclo. Apesar da posição atual no ranking, a tendência recente indica risco de perda de competitividade se a operação não for estabilizada.`;
+    return `A ${transportador} encerrou o período ${comparison}, mas a tendência recente indicou perda de desempenho ao longo dos meses avaliados. Esse comportamento explicou parte da leitura final após a divulgação do ranking.`;
   }
 
   if (tendenciaStatus === "warn") {
-    return `A ${transportador} encerra o período ${comparison}, mas precisa reduzir oscilação operacional para proteger a pontuação e sustentar a posição no ranking.`;
+    return `A ${transportador} encerrou o período ${comparison}, com oscilação operacional relevante ao longo dos meses avaliados. A posição divulgada refletiu essa combinação entre resultado acumulado e estabilidade mensal.`;
   }
 
-  return `A ${transportador} encerra o período ${comparison}, com leitura operacional favorável. A prioridade gerencial deve ser preservar consistência, manter disciplina nos indicadores críticos e replicar os meses de melhor desempenho.`;
+  return `A ${transportador} encerrou o período ${comparison}, com leitura operacional favorável. A posição divulgada refletiu consistência nos indicadores avaliados e bom desempenho relativo no ranking.`;
 }
 
 function formatMonthLabel(value: string, index: number) {
