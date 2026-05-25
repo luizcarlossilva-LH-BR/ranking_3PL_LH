@@ -36,12 +36,15 @@ export default function XptLoginPage() {
 
   return (
     <main className="login-shell">
+      <style>{XPT_LOGIN_STYLES}</style>
       <div className="tech-corner tech-corner-left" />
       <div className="tech-corner tech-corner-right" />
       <section className="login-card">
         <div className="brand brand-logos">
           <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
-          <img className="bsc-mark" src="/bsc-linehaul.png" alt="BSC Line Haul" />
+          <span className="csr-login-mark">
+            <img src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+          </span>
         </div>
 
         <h1>Acesse seu relatorio XPT</h1>
@@ -76,3 +79,23 @@ export default function XptLoginPage() {
     </main>
   );
 }
+
+const XPT_LOGIN_STYLES = `
+  .csr-login-mark {
+    width: 148px;
+    height: 80px;
+    display: grid;
+    place-items: center;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #e7351d 0%, #ee4d2d 52%, #ff8a00 100%);
+    box-shadow: 0 12px 26px rgba(180, 61, 24, .14);
+  }
+
+  .csr-login-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+`;

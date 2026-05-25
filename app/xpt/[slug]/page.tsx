@@ -41,7 +41,9 @@ export default async function XptPage(
       <main className="xpt-shell">
         <style>{XPT_STYLES}</style>
         <section className="xpt-not-found">
-          <img src="/bsc-linehaul.png" alt="BSC Line Haul" />
+          <span className="xpt-not-found-logo">
+            <img src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+          </span>
           <h1>XPT não encontrado</h1>
           <p>Não localizamos esta unidade na aba XPT da planilha.</p>
         </section>
@@ -58,8 +60,8 @@ export default async function XptPage(
       <section className="xpt-hero">
         <div className="xpt-container xpt-hero-grid">
           <div>
-            <img className="xpt-logo" src="/bsc-linehaul.png" alt="BSC Line Haul" />
-            <p className="xpt-eyebrow">Campeão Sobre Rodas 2025</p>
+            <img className="xpt-logo" src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+            <p className="xpt-eyebrow">Performance 2025</p>
             <h1>{xpt.xpt}</h1>
             <p className="xpt-subtitle">
               Relatório de performance XPT com os indicadores de Leakage, Loss, BWT e Resultado.
@@ -217,9 +219,11 @@ const XPT_STYLES = `
   }
 
   .xpt-logo {
-    width: 138px;
+    width: 210px;
     height: auto;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
+    display: block;
+    filter: drop-shadow(0 10px 18px rgba(116, 28, 18, .22));
   }
 
   .xpt-eyebrow {
@@ -343,8 +347,26 @@ const XPT_STYLES = `
     text-align: center;
   }
 
+  .xpt-not-found-logo {
+    width: 190px;
+    height: 104px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #e7351d 0%, #ee4d2d 52%, #ff8a00 100%);
+  }
+
+  .xpt-not-found-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
   .xpt-not-found img {
-    width: 140px;
+    width: 100%;
     height: auto;
   }
 
