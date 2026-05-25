@@ -36,6 +36,25 @@ Critérios das lâminas adicionais:
 | transportador | slug | mes | pontos | eta_destino | no_show | trips |
 |---|---|---|---:|---:|---:|---:|
 
+### Aba `XPT`
+
+Usada pela página pública `/xpt/[slug]`, indicada para QR Codes específicos por unidade XPT.
+
+| 3PL | Ranking | Leakage | Loss | BWT | Resultado |
+|---|---|---:|---:|---:|---:|
+| XPT_SP_Ourinhos_02 | Convidado | 0,00 | 0.02650% | 21,2 | 100,00% |
+
+O `slug` da URL é gerado a partir do nome da coluna `3PL`.
+Exemplo: `XPT_SP_Ourinhos_02` vira `/xpt/xpt-sp-ourinhos-02`.
+
+Classificações aceitas para a mensagem padrão:
+
+- `Top 1`
+- `Top 2`
+- `Top 3`
+- `Certificado`
+- `Convidado`
+
 ## Variáveis de ambiente
 
 Copie `.env.example` para `.env.local` no desenvolvimento local.

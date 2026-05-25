@@ -37,6 +37,16 @@ export type MonthlyRecord = {
   trips: string;
 };
 
+export type XptRecord = {
+  xpt: string;
+  slug: string;
+  ranking: string;
+  leakage: string;
+  loss: string;
+  bwt: string;
+  resultado: string;
+};
+
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const MONTH_ORDER: Record<string, number> = {
   jan: 1,
@@ -281,4 +291,28 @@ export async function getNetworkAverage() {
   if (!scores.length) return 0;
 
   return scores.reduce((sum, value) => sum + value, 0) / scores.length;
+}
+
+export async function getXptBySlug(slug: string): Promise<XptRecord | null> {
+  const values = await getSheetValues("XPT");
+  const rows = rowsToObjects(values);
+
+  const found = rows.find((row) => {
+    const xpt = pick(row, ["3pl", "xpt", "transportador", "transportadora"]);
+    return makeSlug(xpt) === makeSlug(slug);
+  });
+
+  if (!found) return null;
+
+  const xpt = pick(found, ["3pl", "xpt", "transportador", "transportadora"]);
+
+  return {
+    xpt,
+    slug: makeSlug(xpt),
+    ranking: pick(found, ["ranking", "rank", "classificacao", "classificação"]),
+    leakage: pick(found, ["leakage"]),
+    loss: pick(found, ["loss"]),
+    bwt: pick(found, ["bwt"]),
+    resultado: pick(found, ["resultado", "result"])
+  };
 }
