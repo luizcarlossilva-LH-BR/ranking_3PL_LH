@@ -1,10 +1,39 @@
-import { getXptBySlug } from "@/lib/sheets";
+import { redirect } from "next/navigation";
+import { getXptBySlug, makeSlug } from "@/lib/sheets";
 import { formatNumber, parseNumber } from "@/lib/format";
+import { getXptSessionFromCookies } from "@/lib/session";
 
 export default async function XptPage(
   props: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await props.params;
+  const session = await getXptSessionFromCookies();
+
+  if (!session) {
+    redirect("/xpt");
+  }
+
+  if (makeSlug(session.slug) !== makeSlug(slug)) {
+    return (
+      <main className="login-shell">
+        <section className="login-card">
+          <div className="brand brand-logos">
+            <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
+            <img className="bsc-mark compact" src="/bsc-linehaul.png" alt="BSC Line Haul" />
+          </div>
+          <h1>Acesso bloqueado</h1>
+          <p className="muted">
+            Seu CPF esta vinculado a unidade {session.transportador}.
+            Por seguranca, voce nao pode acessar o relatorio de outra unidade XPT.
+          </p>
+          <form action={`/xpt/${session.slug}`}>
+            <button className="button">Abrir minha unidade</button>
+          </form>
+        </section>
+      </main>
+    );
+  }
+
   const xpt = await getXptBySlug(slug);
 
   if (!xpt) {

@@ -49,3 +49,14 @@ export async function getSessionFromCookies() {
 
   return verifySessionToken(token);
 }
+
+export async function getXptSessionFromCookies() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("session_xpt")?.value;
+
+  if (!token) {
+    return null;
+  }
+
+  return verifySessionToken(token);
+}

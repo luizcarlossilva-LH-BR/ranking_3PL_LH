@@ -38,11 +38,11 @@ Critérios das lâminas adicionais:
 
 ### Aba `XPT`
 
-Usada pela página pública `/xpt`, que lista as unidades, e pela rota `/xpt/[slug]`, indicada para QR Codes específicos por unidade XPT.
+Usada pelo login público `/xpt` e pela rota protegida `/xpt/[slug]`, indicada para a página individual de cada unidade XPT.
 
-| 3PL | Ranking | Leakage | Loss | BWT | Resultado |
-|---|---|---:|---:|---:|---:|
-| XPT_SP_Ourinhos_02 | Convidado | 0,00 | 0.02650% | 21,2 | 100,00% |
+| 3PL | CPF | Status | Ranking | Leakage | Loss | BWT | Resultado |
+|---|---:|---|---|---:|---:|---:|---:|
+| XPT_SP_Ourinhos_02 | 12345678900 | ATIVO | Convidado | 0,00 | 0.02650% | 21,2 | 100,00% |
 
 O `slug` da URL é gerado a partir do nome da coluna `3PL`.
 Exemplo: `XPT_SP_Ourinhos_02` vira `/xpt/xpt-sp-ourinhos-02`.

@@ -321,3 +321,26 @@ export async function getXptBySlug(slug: string): Promise<XptRecord | null> {
   const rows = await getAllXpt();
   return rows.find((row) => row.slug === makeSlug(slug)) || null;
 }
+
+export async function findXptAccessByCpf(cpf: string): Promise<AccessRecord | null> {
+  const values = await getSheetValues("XPT");
+  const rows = rowsToObjects(values);
+  const normalizedCpf = onlyDigits(cpf);
+
+  const found = rows.find((row) => {
+    const rowCpf = onlyDigits(pick(row, ["cpf", "documento", "doc"]));
+    const status = pick(row, ["status", "liberado", "ativo"], "ATIVO");
+    return rowCpf === normalizedCpf && isActive(status);
+  });
+
+  if (!found) return null;
+
+  const xpt = pick(found, ["3pl", "xpt", "transportador", "transportadora"]);
+
+  return {
+    cpf: normalizedCpf,
+    transportador: xpt,
+    slug: makeSlug(xpt),
+    status: pick(found, ["status"], "ATIVO")
+  };
+}
