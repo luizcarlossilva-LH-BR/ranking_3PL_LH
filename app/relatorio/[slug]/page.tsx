@@ -77,7 +77,6 @@ export default async function RelatorioPage(
   const pontuacao = parseNumber(ranking.pontuacao);
   const etaDestino = parseNumber(ranking.etaDestino);
   const noShow = parseNumber(ranking.noShow);
-  const trips = parseNumber(ranking.trips);
   const mesesAtivos = parseNumber(ranking.mesesAtivos);
   const pesoTrips = parseNumber(ranking.pesoTrips);
   const rankSafety = parseNumber(ranking.rankSafety);
@@ -86,7 +85,7 @@ export default async function RelatorioPage(
   const pontuacaoPeakSeason = parseNumber(ranking.pontuacaoPeakSeason);
   const mensalTratado = mensal.map(toMonthlyPoint);
   const analiseMensal = buildMonthlyAnalysis(mensalTratado);
-  const diagnosticoVolume = buildVolumeText(ranking.transportador, rank, rankPond, trips, pesoTrips);
+  const diagnosticoVolume = buildVolumeText(ranking.transportador, rank, rankPond, pesoTrips);
   const diagnosticoIndicadores = buildIndicatorItems(etaDestino, noShow);
   const safetyText = buildSafetyText(ranking.transportador, rankSafety, pontuacaoSafety);
   const peakSeasonText = buildPeakSeasonText(ranking.transportador, rankPeakSeason, pontuacaoPeakSeason);
@@ -119,8 +118,7 @@ export default async function RelatorioPage(
               <div className="manager-eyebrow">Relatório de desempenho 2025</div>
               <h1>{ranking.transportador}</h1>
               <p>
-                Leitura pós-divulgação do ranking, com os principais resultados de performance, qualidade operacional,
-                impacto de volume e evolução mensal da transportadora.
+                Relatório com os resultados de performance, qualidade operacional, impacto de volume e evolução mensal.
               </p>
             </div>
 
@@ -192,7 +190,7 @@ export default async function RelatorioPage(
         </section>
 
         <section className="manager-section manager-container manager-grid">
-          <ArticleCard title="Lâmina Safety">
+          <ArticleCard title="Rank Safety">
             <div className="manager-slide-metrics">
               <MetricPill label="Rank Safety" value={formatOptionalRank(rankSafety)} />
               <MetricPill label="Performance Safety" value={formatOptionalScore(pontuacaoSafety)} />
@@ -200,7 +198,7 @@ export default async function RelatorioPage(
             <p>{safetyText}</p>
           </ArticleCard>
 
-          <ArticleCard title="Lâmina Peak Season">
+          <ArticleCard title="Rank Peak Season">
             <div className="manager-slide-metrics">
               <MetricPill label="Rank Peak Season" value={formatOptionalRank(rankPeakSeason)} />
               <MetricPill label="No Show Sem. 46-51" value={formatOptionalPct(pontuacaoPeakSeason)} />
@@ -347,8 +345,8 @@ function buildAverageComparison(pontuacao: number, mediaRede: number) {
   return `${formatNumber(Math.abs(diff), 2)} pts. ${direction} da média geral que foi de ${formatNumber(mediaRede, 2)} pts.`;
 }
 
-function buildVolumeText(transportador: string, rank: number, rankPond: number, trips: number, pesoTrips: number) {
-  const volume = `${formatNumber(trips, 0)} viagens, fator ${formatNumber(pesoTrips, 2)}x`;
+function buildVolumeText(transportador: string, rank: number, rankPond: number, pesoTrips: number) {
+  const volume = `fator ${formatNumber(pesoTrips, 2)}x`;
 
   if (!rank || !rankPond) {
     return `Não foi possível calcular o impacto do volume para a ${transportador}, pois um dos campos necessários está sem informação.`;
