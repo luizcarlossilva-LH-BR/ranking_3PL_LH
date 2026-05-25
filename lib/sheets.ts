@@ -293,26 +293,31 @@ export async function getNetworkAverage() {
   return scores.reduce((sum, value) => sum + value, 0) / scores.length;
 }
 
-export async function getXptBySlug(slug: string): Promise<XptRecord | null> {
-  const values = await getSheetValues("XPT");
-  const rows = rowsToObjects(values);
-
-  const found = rows.find((row) => {
-    const xpt = pick(row, ["3pl", "xpt", "transportador", "transportadora"]);
-    return makeSlug(xpt) === makeSlug(slug);
-  });
-
-  if (!found) return null;
-
-  const xpt = pick(found, ["3pl", "xpt", "transportador", "transportadora"]);
+function mapXptRecord(row: RawRow): XptRecord {
+  const xpt = pick(row, ["3pl", "xpt", "transportador", "transportadora"]);
 
   return {
     xpt,
     slug: makeSlug(xpt),
-    ranking: pick(found, ["ranking", "rank", "classificacao", "classificação"]),
-    leakage: pick(found, ["leakage"]),
-    loss: pick(found, ["loss"]),
-    bwt: pick(found, ["bwt"]),
-    resultado: pick(found, ["resultado", "result"])
+    ranking: pick(row, ["ranking", "rank", "classificacao", "classificação"]),
+    leakage: pick(row, ["leakage"]),
+    loss: pick(row, ["loss"]),
+    bwt: pick(row, ["bwt"]),
+    resultado: pick(row, ["resultado", "result"])
   };
+}
+
+export async function getAllXpt(): Promise<XptRecord[]> {
+  const values = await getSheetValues("XPT");
+  const rows = rowsToObjects(values);
+
+  return rows
+    .map(mapXptRecord)
+    .filter((row) => row.xpt)
+    .sort((a, b) => a.xpt.localeCompare(b.xpt));
+}
+
+export async function getXptBySlug(slug: string): Promise<XptRecord | null> {
+  const rows = await getAllXpt();
+  return rows.find((row) => row.slug === makeSlug(slug)) || null;
 }

@@ -38,7 +38,7 @@ Critérios das lâminas adicionais:
 
 ### Aba `XPT`
 
-Usada pela página pública `/xpt/[slug]`, indicada para QR Codes específicos por unidade XPT.
+Usada pela página pública `/xpt`, que lista as unidades, e pela rota `/xpt/[slug]`, indicada para QR Codes específicos por unidade XPT.
 
 | 3PL | Ranking | Leakage | Loss | BWT | Resultado |
 |---|---|---:|---:|---:|---:|
