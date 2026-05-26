@@ -150,6 +150,18 @@ export default async function RelatorioPage(
           </div>
         </section>
 
+        {rankPond >= 40 && (
+          <section className="manager-container manager-participation">
+            <h2>Agradecimento pela participação</h2>
+            <p>
+              Agradecemos pela participação da <strong>{ranking.transportador}</strong> no ciclo de avaliação 2025.
+              O resultado divulgado reforçou a importância da parceria e da continuidade no desenvolvimento operacional.
+              Mesmo fora das primeiras posições do ranking, a participação contribuiu para fortalecer a base de comparação
+              e identificar oportunidades para o próximo ciclo.
+            </p>
+          </section>
+        )}
+
         <section className="manager-section manager-kpis manager-container">
           <Kpi label="Ranking" value={`#${formatNumber(rankPond, 0)}`} />
           <Kpi label="Pontuação" value={formatNumber(pontuacao, 2)} />
@@ -748,6 +760,28 @@ const REPORT_STYLES = `
     margin-top: 10px;
   }
 
+  .manager-participation {
+    margin-top: -6px;
+    margin-bottom: 10px;
+    padding: 18px 22px;
+    border: 1px solid rgba(238, 77, 45, .24);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(255, 240, 227, .96), rgba(255, 255, 255, .92));
+    box-shadow: 0 12px 34px rgba(180, 61, 24, .08);
+  }
+
+  .manager-participation h2 {
+    margin: 0 0 8px;
+    color: #2d241f;
+    font-size: 20px;
+  }
+
+  .manager-participation p {
+    margin: 0;
+    color: #4e3f37;
+    line-height: 1.55;
+  }
+
   .manager-kpis {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1052,6 +1086,23 @@ const REPORT_STYLES = `
 
     .manager-criteria p + p {
       margin-top: 4px;
+    }
+
+    .manager-participation {
+      margin-top: 4px;
+      margin-bottom: 4px;
+      padding: 8px 10px;
+      page-break-inside: avoid;
+    }
+
+    .manager-participation h2 {
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .manager-participation p {
+      font-size: 9.5px;
+      line-height: 1.28;
     }
 
     .manager-kpis {
