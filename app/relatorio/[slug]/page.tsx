@@ -90,6 +90,7 @@ export default async function RelatorioPage(
   const diagnosticoOperacional = buildOperationalDiagnosis(pontuacao, etaDestino, noShow, analiseMensal.tendenciaStatus);
   const recomendacoes = buildRecommendations(etaDestino, noShow, pontuacao, mensalTratado);
   const conclusao = buildConclusion(ranking.transportador, pontuacao, mediaRede, analiseMensal.tendenciaStatus);
+  const isParticipationOnly = rankPond > 40;
 
   return (
     <>
@@ -127,36 +128,26 @@ export default async function RelatorioPage(
           </div>
         </section>
 
-        <section className="manager-section manager-container">
-          <div className="manager-criteria">
-            <div className="manager-criteria-logo">
-              <img src="/bsc-linehaul.png" alt="BSC Line Haul" />
-            </div>
+        {!isParticipationOnly && (
+          <section className="manager-section manager-container">
+            <div className="manager-criteria">
+              <div className="manager-criteria-logo">
+                <img src="/bsc-linehaul.png" alt="BSC Line Haul" />
+              </div>
 
-            <div>
-              <h2>Critérios e cálculo da premiação</h2>
-              <p>
-                Para participar do ranking oficial, a transportadora precisou ter mais de 3 meses ativos no período
-                analisado. Um mês foi considerado ativo quando teve mais de 12 viagens realizadas.
-              </p>
-              <p>
-                A pontuação base foi composta por três indicadores principais: média da pontuação BSC nos meses ativos,
-                com peso de <strong>60%</strong>; ETA Destino, com peso de <strong>20%</strong>; e No Show, também com
-                peso de <strong>20%</strong>. Após o cálculo da pontuação base, foi aplicado o múltiplo de share.
-              </p>
+              <div>
+                <h2>Critérios e cálculo da premiação</h2>
+                <p>
+                  Para participar do ranking oficial, a transportadora precisou ter mais de 3 meses ativos no período
+                  analisado. Um mês foi considerado ativo quando teve mais de 12 viagens realizadas.
+                </p>
+                <p>
+                  A pontuação base foi composta por três indicadores principais: média da pontuação BSC nos meses ativos,
+                  com peso de <strong>60%</strong>; ETA Destino, com peso de <strong>20%</strong>; e No Show, também com
+                  peso de <strong>20%</strong>. Após o cálculo da pontuação base, foi aplicado o múltiplo de share.
+                </p>
+              </div>
             </div>
-          </div>
-        </section>
-
-        {rankPond >= 40 && (
-          <section className="manager-container manager-participation">
-            <h2>Agradecimento pela participação</h2>
-            <p>
-              Agradecemos pela participação da <strong>{ranking.transportador}</strong> no ciclo de avaliação 2025.
-              O resultado divulgado reforçou a importância da parceria e da continuidade no desenvolvimento operacional.
-              Mesmo fora das primeiras posições do ranking, a participação contribuiu para fortalecer a base de comparação
-              e identificar oportunidades para o próximo ciclo.
-            </p>
           </section>
         )}
 
@@ -169,6 +160,20 @@ export default async function RelatorioPage(
           <Kpi label="Meses Ativos" value={`${formatNumber(mesesAtivos, 0)}/12`} />
         </section>
 
+        {isParticipationOnly && (
+          <section className="manager-container manager-participation">
+            <h2>Agradecimento pela participação</h2>
+            <p>
+              Agradecemos pela participação da <strong>{ranking.transportador}</strong> no ciclo de avaliação 2025.
+              O resultado divulgado reforçou a importância da parceria e da continuidade no desenvolvimento operacional.
+              Mesmo fora das primeiras posições do ranking, a participação contribuiu para fortalecer a base de comparação
+              e identificar oportunidades para o próximo ciclo.
+            </p>
+          </section>
+        )}
+
+        {!isParticipationOnly && (
+          <>
         <section className="manager-section manager-container manager-grid">
           <ArticleCard title="Resumo executivo">
             <p>
@@ -249,6 +254,8 @@ export default async function RelatorioPage(
             <p>{conclusao}</p>
           </div>
         </section>
+          </>
+        )}
 
         <footer className="manager-footer">
           Shopee Brasil · Excelência Operacional · Line Haul
