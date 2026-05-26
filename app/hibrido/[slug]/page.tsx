@@ -78,20 +78,20 @@ export default async function HibridoPage(
       <section className="hibrido-container hibrido-criteria">
         <h2>Critérios de avaliação 2025</h2>
         <p>
-          Os indicadores de resultados de 2025 foram definidos para avaliar a performance operacional
-          com base em metas e critérios específicos. O indicador Leaked possui peso de 35 pontos e
-          considera a quantidade de ocorrências a cada 10 mil pacotes. O BWT vale 20 pontos para
-          resultados menores ou iguais a 13. Já o 1st Scan possui peso de 10 pontos, sendo atribuídos
-          10 pontos para resultados de até 1 dia, 5 pontos para resultados acima de 1 até 2 dias e
-          0 pontos para prazos superiores a 2 dias.
+          Os indicadores de resultados de 2025 foram definidos para avaliar o desempenho operacional
+          com base em metas e critérios específicos.
         </p>
         <p>
-          O SLA representa 25 pontos e avalia o nível de serviço da operação, onde resultados acima
-          de 98% garantem a pontuação máxima, resultados entre 96% e 97,99% recebem 15 pontos e
-          valores abaixo de 96% não pontuam. O indicador de Losses vale 5 pontos para operações com
-          perdas de até 1,3%. Além disso, o critério de Contrato Assinado adiciona 5 pontos quando a
-          regularização contratual estiver concluída. O indicador ADO é apenas informativo e não
-          possui impacto na pontuação final.
+          O indicador Leaked possui peso de 35 pontos e considera a quantidade de ocorrências a cada
+          10 mil pacotes. O BWT vale 20 pontos para resultados menores ou iguais a 13. O 1st Scan vale
+          10 pontos: resultados de até 1 dia recebem 10 pontos, acima de 1 até 2 dias recebem 5 pontos,
+          e acima de 2 dias não pontuam.
+        </p>
+        <p>
+          O SLA representa 25 pontos e avalia o nível de serviço da operação: resultados acima de 98%
+          garantem 25 pontos, resultados entre 96% e 97,99% recebem 15 pontos, e valores abaixo de 96%
+          não pontuam. O indicador Losses vale 5 pontos para operações com perdas de até 1,3%. O
+          critério Contrato Assinado adiciona 5 pontos quando a regularização contratual estiver concluída.
         </p>
       </section>
 
