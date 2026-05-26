@@ -75,6 +75,26 @@ export default async function HibridoPage(
         </div>
       </section>
 
+      <section className="hibrido-container hibrido-criteria">
+        <h2>Critérios de avaliação 2025</h2>
+        <p>
+          Os indicadores de resultados de 2025 foram definidos para avaliar a performance operacional
+          com base em metas e critérios específicos. O indicador Leaked possui peso de 35 pontos e
+          considera a quantidade de ocorrências a cada 10 mil pacotes. O BWT vale 20 pontos para
+          resultados menores ou iguais a 13. Já o 1st Scan possui peso de 10 pontos, sendo atribuídos
+          10 pontos para resultados de até 1 dia, 5 pontos para resultados acima de 1 até 2 dias e
+          0 pontos para prazos superiores a 2 dias.
+        </p>
+        <p>
+          O SLA representa 25 pontos e avalia o nível de serviço da operação, onde resultados acima
+          de 98% garantem a pontuação máxima, resultados entre 96% e 97,99% recebem 15 pontos e
+          valores abaixo de 96% não pontuam. O indicador de Losses vale 5 pontos para operações com
+          perdas de até 1,3%. Além disso, o critério de Contrato Assinado adiciona 5 pontos quando a
+          regularização contratual estiver concluída. O indicador ADO é apenas informativo e não
+          possui impacto na pontuação final.
+        </p>
+      </section>
+
       <section className="hibrido-container hibrido-message">
         <div className="hibrido-message-badge">{message.badge}</div>
         <div>
@@ -255,12 +275,33 @@ const HIBRIDO_STYLES = `
     line-height: 1.1;
   }
 
+  .hibrido-criteria,
   .hibrido-message,
   .hibrido-not-found {
     border: 1px solid #f3b68e;
     border-radius: 8px;
     background: rgba(255, 255, 255, .94);
     box-shadow: 0 12px 34px rgba(180, 61, 24, .08);
+  }
+
+  .hibrido-criteria {
+    padding: 24px 28px;
+    margin-top: 24px;
+  }
+
+  .hibrido-criteria h2 {
+    margin: 0 0 12px;
+    font-size: 24px;
+  }
+
+  .hibrido-criteria p {
+    margin: 0;
+    color: #4e3f37;
+    line-height: 1.65;
+  }
+
+  .hibrido-criteria p + p {
+    margin-top: 12px;
   }
 
   .hibrido-message {
