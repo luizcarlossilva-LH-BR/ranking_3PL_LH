@@ -44,6 +44,8 @@ Usada pelo login público `/xpt` e pela rota protegida `/xpt/[slug]`, indicada p
 |---|---:|---|---|---:|---:|---:|---:|
 | XPT_SP_Ourinhos_02 | 12345678900 | ATIVO | Convidado | 0,00 | 0.02650% | 21,2 | 100,00% |
 
+Para liberar mais de um acesso para a mesma unidade, preencha a coluna `CPF` com os CPFs separados por vírgula, ponto e vírgula, barra ou quebra de linha. Também são aceitas colunas adicionais como `CPF 2`, `CPF 3` e `CPF 4`.
+
 O `slug` da URL é gerado a partir do nome da coluna `3PL`.
 Exemplo: `XPT_SP_Ourinhos_02` vira `/xpt/xpt-sp-ourinhos-02`.
 
@@ -62,6 +64,8 @@ Usada pelo login público `/hibrido` e pela rota protegida `/hibrido/[slug]`, in
 | 3PL | CPF | Status | Ranking | Resultado |
 |---|---:|---|---|---:|
 | Total Express | 12345678900 | ATIVO | Top 1 | 100,00% |
+
+Para liberar mais de um acesso para a mesma operação, preencha a coluna `CPF` com os CPFs separados por vírgula, ponto e vírgula, barra ou quebra de linha. Também são aceitas colunas adicionais como `CPF 2`, `CPF 3` e `CPF 4`.
 
 O `slug` da URL é gerado a partir do nome da coluna `3PL`.
 Exemplo: `Total Express` vira `/hibrido/total-express`.

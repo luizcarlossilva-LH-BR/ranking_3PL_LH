@@ -161,6 +161,38 @@ function onlyDigits(value: string) {
   return String(value || "").replace(/\D/g, "");
 }
 
+function getCpfCandidates(value: string) {
+  const normalized = onlyDigits(value);
+  const chunks =
+    normalized.length > 11 && normalized.length % 11 === 0
+      ? normalized.match(/\d{11}/g) || []
+      : [];
+  const separated = String(value || "")
+    .split(/[;,\n\r|/]+/)
+    .map((part) => onlyDigits(part))
+    .filter(Boolean);
+
+  return Array.from(new Set([...separated, ...chunks, normalized].filter((item) => item.length === 11)));
+}
+
+function rowMatchesCpf(row: RawRow, cpf: string) {
+  const normalizedCpf = onlyDigits(cpf);
+  const cpfFields = Object.entries(row)
+    .filter(([key]) => {
+      return (
+        key === "cpf" ||
+        key === "documento" ||
+        key === "doc" ||
+        key.startsWith("cpf_") ||
+        key.startsWith("documento_") ||
+        key.startsWith("doc_")
+      );
+    })
+    .map(([, value]) => value);
+
+  return cpfFields.some((value) => getCpfCandidates(value).includes(normalizedCpf));
+}
+
 export function makeSlug(value: string) {
   return normalizeKey(value)
     .replace(/_/g, "-")
@@ -210,9 +242,8 @@ export async function findAccessByCpf(cpf: string): Promise<AccessRecord | null>
   const normalizedCpf = onlyDigits(cpf);
 
   const found = rows.find((row) => {
-    const rowCpf = onlyDigits(pick(row, ["cpf", "documento", "doc"]));
     const status = pick(row, ["status", "liberado", "ativo"], "ATIVO");
-    return rowCpf === normalizedCpf && isActive(status);
+    return rowMatchesCpf(row, normalizedCpf) && isActive(status);
   });
 
   if (!found) return null;
@@ -335,9 +366,8 @@ export async function findXptAccessByCpf(cpf: string): Promise<AccessRecord | nu
   const normalizedCpf = onlyDigits(cpf);
 
   const found = rows.find((row) => {
-    const rowCpf = onlyDigits(pick(row, ["cpf", "documento", "doc"]));
     const status = pick(row, ["status", "liberado", "ativo"], "ATIVO");
-    return rowCpf === normalizedCpf && isActive(status);
+    return rowMatchesCpf(row, normalizedCpf) && isActive(status);
   });
 
   if (!found) return null;
@@ -384,9 +414,8 @@ export async function findHibridoAccessByCpf(cpf: string): Promise<AccessRecord 
   const normalizedCpf = onlyDigits(cpf);
 
   const found = rows.find((row) => {
-    const rowCpf = onlyDigits(pick(row, ["cpf", "documento", "doc"]));
     const status = pick(row, ["status", "liberado", "ativo"], "ATIVO");
-    return rowCpf === normalizedCpf && isActive(status);
+    return rowMatchesCpf(row, normalizedCpf) && isActive(status);
   });
 
   if (!found) return null;
