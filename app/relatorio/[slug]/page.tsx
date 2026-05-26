@@ -128,36 +128,25 @@ export default async function RelatorioPage(
           </div>
         </section>
 
-        {!isParticipationOnly && (
-          <section className="manager-section manager-container">
-            <div className="manager-criteria">
-              <div className="manager-criteria-logo">
-                <img src="/bsc-linehaul.png" alt="BSC Line Haul" />
-              </div>
-
-              <div>
-                <h2>Critérios e cálculo da premiação</h2>
-                <p>
-                  Para participar do ranking oficial, a transportadora precisou ter mais de 3 meses ativos no período
-                  analisado. Um mês foi considerado ativo quando teve mais de 12 viagens realizadas.
-                </p>
-                <p>
-                  A pontuação base foi composta por três indicadores principais: média da pontuação BSC nos meses ativos,
-                  com peso de <strong>60%</strong>; ETA Destino, com peso de <strong>20%</strong>; e No Show, também com
-                  peso de <strong>20%</strong>. Após o cálculo da pontuação base, foi aplicado o múltiplo de share.
-                </p>
-              </div>
+        <section className="manager-section manager-container">
+          <div className="manager-criteria">
+            <div className="manager-criteria-logo">
+              <img src="/bsc-linehaul.png" alt="BSC Line Haul" />
             </div>
-          </section>
-        )}
 
-        <section className="manager-section manager-kpis manager-container">
-          <Kpi label="Ranking" value={`#${formatNumber(rankPond, 0)}`} />
-          <Kpi label="Pontuação" value={formatNumber(pontuacao, 2)} />
-          <Kpi label="Peso Trips" value={`${formatNumber(pesoTrips, 2)}x`} />
-          <Kpi label="ETA Destino" value={formatPct(etaDestino)} status={getEtaStatus(etaDestino)} />
-          <Kpi label="No Show" value={formatPct(noShow)} status={getNoShowStatus(noShow)} />
-          <Kpi label="Meses Ativos" value={`${formatNumber(mesesAtivos, 0)}/12`} />
+            <div>
+              <h2>Critérios e cálculo da premiação</h2>
+              <p>
+                Para participar do ranking oficial, a transportadora precisou ter mais de 3 meses ativos no período
+                analisado. Um mês foi considerado ativo quando teve mais de 12 viagens realizadas.
+              </p>
+              <p>
+                A pontuação base foi composta por três indicadores principais: média da pontuação BSC nos meses ativos,
+                com peso de <strong>60%</strong>; ETA Destino, com peso de <strong>20%</strong>; e No Show, também com
+                peso de <strong>20%</strong>. Após o cálculo da pontuação base, foi aplicado o múltiplo de share.
+              </p>
+            </div>
+          </div>
         </section>
 
         {isParticipationOnly && (
@@ -174,6 +163,15 @@ export default async function RelatorioPage(
 
         {!isParticipationOnly && (
           <>
+        <section className="manager-section manager-kpis manager-container">
+          <Kpi label="Ranking" value={`#${formatNumber(rankPond, 0)}`} />
+          <Kpi label="Pontuação" value={formatNumber(pontuacao, 2)} />
+          <Kpi label="Peso Trips" value={`${formatNumber(pesoTrips, 2)}x`} />
+          <Kpi label="ETA Destino" value={formatPct(etaDestino)} status={getEtaStatus(etaDestino)} />
+          <Kpi label="No Show" value={formatPct(noShow)} status={getNoShowStatus(noShow)} />
+          <Kpi label="Meses Ativos" value={`${formatNumber(mesesAtivos, 0)}/12`} />
+        </section>
+
         <section className="manager-section manager-container manager-grid">
           <ArticleCard title="Resumo executivo">
             <p>
