@@ -153,8 +153,8 @@ export default async function RelatorioPage(
           <section className="manager-container manager-participation">
             <h2>Agradecimento pela participação</h2>
             <p>
-              Agradecemos pela participação da <strong>{ranking.transportador}</strong> no ciclo de avaliação 2025.
-              O resultado divulgado reforçou a importância da parceria e da continuidade no desenvolvimento operacional.
+              Agradecemos pela participação da <strong>{ranking.transportador}</strong>. O resultado divulgado durante o evento
+              reforçou a importância da parceria e da continuidade no desenvolvimento operacional.
               Mesmo fora das primeiras posições do ranking, a participação contribuiu para fortalecer a base de comparação
               e identificar oportunidades para o próximo ciclo.
             </p>
