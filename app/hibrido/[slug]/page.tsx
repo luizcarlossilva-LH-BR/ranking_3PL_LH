@@ -95,6 +95,15 @@ export default async function HibridoPage(
         </p>
       </section>
 
+      <section className="hibrido-container hibrido-metrics" aria-label="Indicadores de resultado">
+        <MetricCard label="Leaked" value={formatMetricValue(hibrido.leaked)} />
+        <MetricCard label="BWT" value={formatMetricValue(hibrido.bwt)} />
+        <MetricCard label="1st Scan (dias)" value={formatMetricValue(hibrido.firstScan)} />
+        <MetricCard label="SLA" value={formatMetricValue(hibrido.sla)} />
+        <MetricCard label="Losses" value={formatMetricValue(hibrido.losses)} />
+        <MetricCard label="Contrato Assinado" value={formatMetricValue(hibrido.contratoAssinado)} />
+      </section>
+
       <section className="hibrido-container hibrido-message">
         <div className="hibrido-message-badge">{message.badge}</div>
         <div>
@@ -106,6 +115,19 @@ export default async function HibridoPage(
       </section>
     </main>
   );
+}
+
+function MetricCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="hibrido-metric">
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function formatMetricValue(value: string) {
+  return value || "N/I";
 }
 
 function normalizeRankingLabel(value: string) {
@@ -276,6 +298,7 @@ const HIBRIDO_STYLES = `
   }
 
   .hibrido-criteria,
+  .hibrido-metric,
   .hibrido-message,
   .hibrido-not-found {
     border: 1px solid #f3b68e;
@@ -302,6 +325,35 @@ const HIBRIDO_STYLES = `
 
   .hibrido-criteria p + p {
     margin-top: 12px;
+  }
+
+  .hibrido-metrics {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .hibrido-metric {
+    min-height: 112px;
+    display: grid;
+    align-content: center;
+    gap: 8px;
+    padding: 16px;
+  }
+
+  .hibrido-metric span {
+    color: #765f53;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  .hibrido-metric strong {
+    color: #2d241f;
+    font-size: 24px;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
   }
 
   .hibrido-message {
@@ -371,12 +423,22 @@ const HIBRIDO_STYLES = `
       grid-template-columns: 1fr;
     }
 
+    .hibrido-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .hibrido-hero h1 {
       font-size: 32px;
     }
 
     .hibrido-message {
       padding: 22px;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .hibrido-metrics {
+      grid-template-columns: 1fr;
     }
   }
 `;

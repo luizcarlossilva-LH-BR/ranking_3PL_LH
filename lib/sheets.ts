@@ -52,6 +52,12 @@ export type HibridoRecord = {
   slug: string;
   ranking: string;
   resultado: string;
+  leaked: string;
+  bwt: string;
+  firstScan: string;
+  sla: string;
+  losses: string;
+  contratoAssinado: string;
 };
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
@@ -389,7 +395,13 @@ function mapHibridoRecord(row: RawRow): HibridoRecord {
     hibrido,
     slug: makeSlug(hibrido),
     ranking: pick(row, ["ranking", "rank", "classificacao", "classificação"]),
-    resultado: pick(row, ["resultado", "result"])
+    resultado: pick(row, ["resultado", "result"]),
+    leaked: pick(row, ["leaked", "leakage"]),
+    bwt: pick(row, ["bwt"]),
+    firstScan: pick(row, ["1st_scan_dias", "1st_scan", "first_scan", "first_scan_dias"]),
+    sla: pick(row, ["sla"]),
+    losses: pick(row, ["losses", "loss"]),
+    contratoAssinado: pick(row, ["contrato_assinado", "contrato", "contrato_regularizado"])
   };
 }
 

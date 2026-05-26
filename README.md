@@ -61,9 +61,9 @@ Classificações aceitas para a mensagem padrão:
 
 Usada pelo login público `/hibrido` e pela rota protegida `/hibrido/[slug]`, indicada para a página individual de cada operação híbrida.
 
-| 3PL | CPF | Status | Ranking | Resultado |
-|---|---:|---|---|---:|
-| Total Express | 12345678900 | ATIVO | Top 1 | 100,00% |
+| 3PL | CPF | Status | Ranking | Resultado | Leaked | BWT | 1st Scan (dias) | SLA | Losses | Contrato Assinado |
+|---|---:|---|---|---:|---:|---:|---:|---:|---:|---|
+| Total Express | 12345678900 | ATIVO | Top 1 | 100,00% | 0,00 | 12,5 | 1 | 99,0% | 1,1% | Sim |
 
 Para liberar mais de um acesso para a mesma operação, preencha a coluna `CPF` com os CPFs separados por vírgula, ponto e vírgula, barra ou quebra de linha. Também são aceitas colunas adicionais como `CPF 2`, `CPF 3` e `CPF 4`.
 
