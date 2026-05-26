@@ -43,7 +43,7 @@ export default function HibridoLoginPage() {
         <div className="brand brand-logos">
           <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
           <span className="csr-login-mark">
-            <img src="/campeao-sobre-rodas-logo.png" alt="Campeão Sobre Rodas" />
+            <img src="/campeao-login-logo.png" alt="Campeão Sobre Rodas" />
           </span>
         </div>
 
@@ -82,13 +82,14 @@ export default function HibridoLoginPage() {
 
 const HIBRIDO_LOGIN_STYLES = `
   .csr-login-mark {
-    width: 148px;
-    height: 80px;
+    width: 170px;
+    height: 98px;
     display: grid;
     place-items: center;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #e7351d 0%, #ee4d2d 52%, #ff8a00 100%);
+    background: rgba(255, 255, 255, .92);
+    border: 1px solid rgba(238, 77, 45, .22);
     box-shadow: 0 12px 26px rgba(180, 61, 24, .14);
   }
 
