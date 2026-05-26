@@ -9,8 +9,6 @@ const TARGET_ETA_DESTINO = 95;
 const WARN_ETA_DESTINO = 93;
 const TARGET_NO_SHOW = 98;
 const WARN_NO_SHOW = 96;
-const MONTH_LABELS = ["Jan", "Fev.", "Mar", "Abr.", "Mai", "Jun.", "Jul", "Ago.", "Set", "Out", "Nov.", "Dez"];
-
 type MonthlyPoint = MonthlyRecord & {
   pontosNum: number;
   etaDestinoNum: number;
@@ -568,11 +566,7 @@ function buildConclusion(
 }
 
 function formatMonthLabel(value: string, index: number) {
-  const numeric = Number(String(value).match(/\d{1,2}/)?.[0]);
-
-  if (numeric >= 1 && numeric <= 12) return MONTH_LABELS[numeric - 1];
-
-  return MONTH_LABELS[index] || value;
+  return String(value || "").trim() || `Mês ${index + 1}`;
 }
 
 function getEtaStatus(value: number) {
