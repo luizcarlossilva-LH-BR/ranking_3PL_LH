@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     if (!access) {
       return NextResponse.json(
-        { message: "CPF nao encontrado ou sem acesso ativo para XPT." },
+        { message: "CPF não encontrado ou sem acesso ativo para XPT." },
         { status: 403 }
       );
     }

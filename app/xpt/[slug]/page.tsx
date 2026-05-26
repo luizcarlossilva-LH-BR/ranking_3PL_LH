@@ -23,8 +23,8 @@ export default async function XptPage(
           </div>
           <h1>Acesso bloqueado</h1>
           <p className="muted">
-            Seu CPF esta vinculado a unidade {session.transportador}.
-            Por seguranca, voce nao pode acessar o relatorio de outra unidade XPT.
+            Seu CPF está vinculado à unidade {session.transportador}.
+            Por segurança, você não pode acessar o relatório de outra unidade XPT.
           </p>
           <form action={`/xpt/${session.slug}`}>
             <button className="button">Abrir minha unidade</button>
@@ -42,7 +42,7 @@ export default async function XptPage(
         <style>{XPT_STYLES}</style>
         <section className="xpt-not-found">
           <span className="xpt-not-found-logo">
-            <img src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+            <img src="/campeao-sobre-rodas-logo.png" alt="Campeão Sobre Rodas" />
           </span>
           <h1>XPT não encontrado</h1>
           <p>Não localizamos esta unidade na aba XPT da planilha.</p>
@@ -60,7 +60,7 @@ export default async function XptPage(
       <section className="xpt-hero">
         <div className="xpt-container xpt-hero-grid">
           <div>
-            <img className="xpt-logo" src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+            <img className="xpt-logo" src="/campeao-sobre-rodas-logo.png" alt="Campeão Sobre Rodas" />
             <p className="xpt-eyebrow">Performance 2025</p>
             <h1>{xpt.xpt}</h1>
             <p className="xpt-subtitle">

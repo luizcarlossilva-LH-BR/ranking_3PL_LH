@@ -22,11 +22,11 @@ export default async function HibridoPage(
           </div>
           <h1>Acesso bloqueado</h1>
           <p className="muted">
-            Seu CPF esta vinculado a operacao {session.transportador}.
-            Por seguranca, voce nao pode acessar o relatorio de outra operacao Hibrida.
+            Seu CPF está vinculado à operação {session.transportador}.
+            Por segurança, você não pode acessar o relatório de outra operação híbrida.
           </p>
           <form action={`/hibrido/${session.slug}`}>
-            <button className="button">Abrir minha operacao</button>
+            <button className="button">Abrir minha operação</button>
           </form>
         </section>
       </main>
@@ -41,10 +41,10 @@ export default async function HibridoPage(
         <style>{HIBRIDO_STYLES}</style>
         <section className="hibrido-not-found">
           <span className="hibrido-not-found-logo">
-            <img src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+            <img src="/campeao-sobre-rodas-logo.png" alt="Campeão Sobre Rodas" />
           </span>
-          <h1>Hibrido nao encontrado</h1>
-          <p>Nao localizamos esta operacao na aba Hibrido da planilha.</p>
+          <h1>Híbrido não encontrado</h1>
+          <p>Não localizamos esta operação na aba Híbrido da planilha.</p>
         </section>
       </main>
     );
@@ -59,16 +59,16 @@ export default async function HibridoPage(
       <section className="hibrido-hero">
         <div className="hibrido-container hibrido-hero-grid">
           <div>
-            <img className="hibrido-logo" src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+            <img className="hibrido-logo" src="/campeao-sobre-rodas-logo.png" alt="Campeão Sobre Rodas" />
             <p className="hibrido-eyebrow">Performance 2025</p>
             <h1>{hibrido.hibrido}</h1>
             <p className="hibrido-subtitle">
-              Reconhecimento da operacao hibrida no Campeao Sobre Rodas 2025.
+              Reconhecimento da operação híbrida no Campeão Sobre Rodas 2025.
             </p>
           </div>
 
           <div className="hibrido-rank">
-            <span>Classificacao</span>
+            <span>Classificação</span>
             <strong>{normalizeRankingLabel(hibrido.ranking)}</strong>
             {hibrido.resultado && <small>Resultado {hibrido.resultado}</small>}
           </div>
@@ -111,12 +111,12 @@ export default async function HibridoPage(
 function normalizeRankingLabel(value: string) {
   const normalized = normalizeRanking(value);
 
-  if (normalized === "top1" || normalized === "1" || normalized === "1lugar") return "1o Lugar";
-  if (normalized === "top2" || normalized === "2" || normalized === "2lugar") return "2o Lugar";
-  if (normalized === "top3" || normalized === "3" || normalized === "3lugar") return "3o Lugar";
-  if (normalized === "top4" || normalized === "4" || normalized === "4lugar") return "4o Lugar";
+  if (normalized === "top1" || normalized === "1" || normalized === "1lugar") return "1º Lugar";
+  if (normalized === "top2" || normalized === "2" || normalized === "2lugar") return "2º Lugar";
+  if (normalized === "top3" || normalized === "3" || normalized === "3lugar") return "3º Lugar";
+  if (normalized === "top4" || normalized === "4" || normalized === "4lugar") return "4º Lugar";
 
-  return value || "Nao informado";
+  return value || "Não informado";
 }
 
 function normalizeRanking(value: string) {
@@ -133,12 +133,12 @@ function getHibridoMessage(ranking: string) {
   if (normalized === "top1" || normalized === "1" || normalized === "1lugar") {
     return {
       badge: "1",
-      title: "1o Lugar - Campeao Sobre Rodas 2025",
+      title: "1º Lugar - Campeão Sobre Rodas 2025",
       paragraphs: [
-        "Parabens por essa grande conquista no Campeao Sobre Rodas 2025!",
-        "Alcancar o 1o lugar foi resultado de muito empenho, dedicacao e trabalho em equipe ao longo de todo o ano. Cada desafio enfrentado e cada entrega realizada com excelencia fizeram parte dessa vitoria tao especial.",
-        "Que esse reconhecimento seja motivo de orgulho para todos e tambem um incentivo para continuarem buscando resultados cada vez melhores.",
-        "Voces mostraram a forca do time e fizeram historia nesta edicao!"
+        "Parabéns por essa grande conquista no Campeão Sobre Rodas 2025!",
+        "Alcançar o 1º lugar foi resultado de muito empenho, dedicação e trabalho em equipe ao longo de todo o ano. Cada desafio enfrentado e cada entrega realizada com excelência fizeram parte dessa vitória tão especial.",
+        "Que esse reconhecimento seja motivo de orgulho para todos e também um incentivo para continuarem buscando resultados cada vez melhores.",
+        "Vocês mostraram a força do time e fizeram história nesta edição!"
       ]
     };
   }
@@ -146,11 +146,11 @@ function getHibridoMessage(ranking: string) {
   if (normalized === "top2" || normalized === "2" || normalized === "2lugar") {
     return {
       badge: "2",
-      title: "2o Lugar - Campeao Sobre Rodas 2025",
+      title: "2º Lugar - Campeão Sobre Rodas 2025",
       paragraphs: [
-        "Parabens pela conquista do 2o lugar no Campeao Sobre Rodas 2025!",
-        "Esse resultado refletiu todo o empenho, comprometimento e dedicacao demonstrados pela equipe ao longo do ano.",
-        "Estar entre os melhores foi motivo de muito orgulho e mostrou a forca e a excelencia do trabalho realizado por todos.",
+        "Parabéns pela conquista do 2º lugar no Campeão Sobre Rodas 2025!",
+        "Esse resultado refletiu todo o empenho, comprometimento e dedicação demonstrados pela equipe ao longo do ano.",
+        "Estar entre os melhores foi motivo de muito orgulho e mostrou a força e a excelência do trabalho realizado por todos.",
         "Que este reconhecimento seja mais um incentivo para continuarem evoluindo, conquistando novos resultados e seguindo cada vez mais fortes rumo ao topo!"
       ]
     };
@@ -159,11 +159,11 @@ function getHibridoMessage(ranking: string) {
   if (normalized === "top3" || normalized === "3" || normalized === "3lugar") {
     return {
       badge: "3",
-      title: "3o Lugar - Campeao Sobre Rodas 2025",
+      title: "3º Lugar - Campeão Sobre Rodas 2025",
       paragraphs: [
-        "Parabens pela conquista do 3o lugar no Campeao Sobre Rodas 2025!",
-        "Esse resultado refletiu todo o empenho, comprometimento e dedicacao demonstrados pela equipe ao longo do ano.",
-        "Estar entre os melhores foi motivo de muito orgulho e mostrou a forca e a excelencia do trabalho realizado por todos.",
+        "Parabéns pela conquista do 3º lugar no Campeão Sobre Rodas 2025!",
+        "Esse resultado refletiu todo o empenho, comprometimento e dedicação demonstrados pela equipe ao longo do ano.",
+        "Estar entre os melhores foi motivo de muito orgulho e mostrou a força e a excelência do trabalho realizado por todos.",
         "Que este reconhecimento seja mais um incentivo para continuarem evoluindo, conquistando novos resultados e seguindo cada vez mais fortes rumo ao topo!"
       ]
     };
@@ -172,22 +172,22 @@ function getHibridoMessage(ranking: string) {
   if (normalized === "top4" || normalized === "4" || normalized === "4lugar") {
     return {
       badge: "4",
-      title: "4o Lugar - Campeao Sobre Rodas 2025",
+      title: "4º Lugar - Campeão Sobre Rodas 2025",
       paragraphs: [
-        "Parabens pelos resultados conquistados ao longo de 2025!",
-        "Sabemos que ainda existem oportunidades de crescimento, e temos certeza de que, com dedicacao e melhoria continua, grandes conquistas podem estar mais proximas no proximo ciclo.",
-        "Que esta experiencia sirva como motivacao para continuarem crescendo, superando desafios e alcancando resultados ainda mais expressivos!"
+        "Parabéns pelos resultados conquistados ao longo de 2025!",
+        "Sabemos que ainda existem oportunidades de crescimento, e temos certeza de que, com dedicação e melhoria contínua, grandes conquistas podem estar mais próximas no próximo ciclo.",
+        "Que esta experiência sirva como motivação para continuarem crescendo, superando desafios e alcançando resultados ainda mais expressivos!"
       ]
     };
   }
 
   return {
     badge: "H",
-    title: "Reconhecimento Campeao Sobre Rodas 2025",
+    title: "Reconhecimento Campeão Sobre Rodas 2025",
     paragraphs: [
-      "Parabens pelos resultados conquistados ao longo de 2025!",
-      "A participacao no Campeao Sobre Rodas demonstrou empenho, parceria e evolucao operacional ao longo do ciclo.",
-      "Que este reconhecimento seja um incentivo para a equipe continuar buscando melhoria continua e resultados ainda mais consistentes."
+      "Parabéns pelos resultados conquistados ao longo de 2025!",
+      "A participação no Campeão Sobre Rodas demonstrou empenho, parceria e evolução operacional ao longo do ciclo.",
+      "Que este reconhecimento seja um incentivo para a equipe continuar buscando melhoria contínua e resultados ainda mais consistentes."
     ]
   };
 }

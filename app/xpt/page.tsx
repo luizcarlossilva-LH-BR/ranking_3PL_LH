@@ -22,7 +22,7 @@ export default function XptLoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setErro(data?.message || "Nao foi possivel validar o acesso XPT.");
+        setErro(data?.message || "Não foi possível validar o acesso XPT.");
         return;
       }
 
@@ -43,14 +43,14 @@ export default function XptLoginPage() {
         <div className="brand brand-logos">
           <img className="shopee-mark" src="/shopee-icon.png" alt="Shopee" />
           <span className="csr-login-mark">
-            <img src="/campeao-sobre-rodas-logo.png" alt="Campeao Sobre Rodas" />
+            <img src="/campeao-sobre-rodas-logo.png" alt="Campeão Sobre Rodas" />
           </span>
         </div>
 
-        <h1>Acesse seu relatorio XPT</h1>
+        <h1>Acesse seu relatório XPT</h1>
 
         <p className="muted">
-          Digite o CPF cadastrado para visualizar a pagina individual da sua unidade XPT.
+          Digite o CPF cadastrado para visualizar a página individual da sua unidade XPT.
         </p>
 
         <form className="form" onSubmit={handleSubmit}>
@@ -60,20 +60,20 @@ export default function XptLoginPage() {
             inputMode="numeric"
             pattern="[0-9]*"
             required
-            placeholder="Digite somente numeros"
+            placeholder="Digite somente números"
             value={cpf}
             onChange={(e) => setCpf(e.target.value.replace(/\D/g, ""))}
           />
 
           <button className="button" disabled={loading}>
-            {loading ? "Validando..." : "Acessar relatorio XPT"}
+            {loading ? "Validando..." : "Acessar relatório XPT"}
           </button>
 
           {erro && <div className="error">{erro}</div>}
         </form>
 
         <p className="muted" style={{ fontSize: 13, marginTop: 18 }}>
-          O acesso e individual e liberado conforme cadastro na aba XPT do Google Sheets.
+          O acesso é individual e liberado conforme cadastro na aba XPT do Google Sheets.
         </p>
       </section>
     </main>

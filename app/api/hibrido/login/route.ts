@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     if (!access) {
       return NextResponse.json(
-        { message: "CPF nao encontrado ou sem acesso ativo para Hibrido." },
+        { message: "CPF não encontrado ou sem acesso ativo para Híbrido." },
         { status: 403 }
       );
     }
@@ -44,9 +44,9 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Erro no login Hibrido:", error);
+    console.error("Erro no login Híbrido:", error);
     return NextResponse.json(
-      { message: "Erro interno ao validar o acesso Hibrido." },
+      { message: "Erro interno ao validar o acesso Híbrido." },
       { status: 500 }
     );
   }
