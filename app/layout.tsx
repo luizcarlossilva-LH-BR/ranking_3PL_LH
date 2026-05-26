@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   description: "Portal de relatório individual por transportadora",
   icons: {
     icon: "/icon.png",
+    shortcut: "/icon.png",
     apple: "/icon.png"
   }
 };
