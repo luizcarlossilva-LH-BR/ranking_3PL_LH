@@ -60,3 +60,14 @@ export async function getXptSessionFromCookies() {
 
   return verifySessionToken(token);
 }
+
+export async function getHibridoSessionFromCookies() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("session_hibrido")?.value;
+
+  if (!token) {
+    return null;
+  }
+
+  return verifySessionToken(token);
+}

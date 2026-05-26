@@ -55,6 +55,24 @@ Classificações aceitas para a mensagem padrão:
 - `Certificado`
 - `Convidado`
 
+### Aba `Hibrido`
+
+Usada pelo login público `/hibrido` e pela rota protegida `/hibrido/[slug]`, indicada para a página individual de cada operação híbrida.
+
+| 3PL | CPF | Status | Ranking | Resultado |
+|---|---:|---|---|---:|
+| Total Express | 12345678900 | ATIVO | Top 1 | 100,00% |
+
+O `slug` da URL é gerado a partir do nome da coluna `3PL`.
+Exemplo: `Total Express` vira `/hibrido/total-express`.
+
+Classificações aceitas para a mensagem padrão:
+
+- `Top 1` ou `1`
+- `Top 2` ou `2`
+- `Top 3` ou `3`
+- `Top 4` ou `4`
+
 ## Variáveis de ambiente
 
 Copie `.env.example` para `.env.local` no desenvolvimento local.

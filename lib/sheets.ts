@@ -47,6 +47,13 @@ export type XptRecord = {
   resultado: string;
 };
 
+export type HibridoRecord = {
+  hibrido: string;
+  slug: string;
+  ranking: string;
+  resultado: string;
+};
+
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
 const MONTH_ORDER: Record<string, number> = {
   jan: 1,
@@ -341,6 +348,55 @@ export async function findXptAccessByCpf(cpf: string): Promise<AccessRecord | nu
     cpf: normalizedCpf,
     transportador: xpt,
     slug: makeSlug(xpt),
+    status: pick(found, ["status"], "ATIVO")
+  };
+}
+
+function mapHibridoRecord(row: RawRow): HibridoRecord {
+  const hibrido = pick(row, ["3pl", "hibrido", "híbrido", "transportador", "transportadora"]);
+
+  return {
+    hibrido,
+    slug: makeSlug(hibrido),
+    ranking: pick(row, ["ranking", "rank", "classificacao", "classificação"]),
+    resultado: pick(row, ["resultado", "result"])
+  };
+}
+
+export async function getAllHibridos(): Promise<HibridoRecord[]> {
+  const values = await getSheetValues("Hibrido");
+  const rows = rowsToObjects(values);
+
+  return rows
+    .map(mapHibridoRecord)
+    .filter((row) => row.hibrido)
+    .sort((a, b) => a.hibrido.localeCompare(b.hibrido));
+}
+
+export async function getHibridoBySlug(slug: string): Promise<HibridoRecord | null> {
+  const rows = await getAllHibridos();
+  return rows.find((row) => row.slug === makeSlug(slug)) || null;
+}
+
+export async function findHibridoAccessByCpf(cpf: string): Promise<AccessRecord | null> {
+  const values = await getSheetValues("Hibrido");
+  const rows = rowsToObjects(values);
+  const normalizedCpf = onlyDigits(cpf);
+
+  const found = rows.find((row) => {
+    const rowCpf = onlyDigits(pick(row, ["cpf", "documento", "doc"]));
+    const status = pick(row, ["status", "liberado", "ativo"], "ATIVO");
+    return rowCpf === normalizedCpf && isActive(status);
+  });
+
+  if (!found) return null;
+
+  const hibrido = pick(found, ["3pl", "hibrido", "híbrido", "transportador", "transportadora"]);
+
+  return {
+    cpf: normalizedCpf,
+    transportador: hibrido,
+    slug: makeSlug(hibrido),
     status: pick(found, ["status"], "ATIVO")
   };
 }
